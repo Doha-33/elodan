@@ -1,7 +1,7 @@
+
 "use client";
 
 import React, { useState } from "react";
-// Fix: Using next/navigation for useRouter in App Router
 import { useRouter } from "next/navigation";
 import { chatService } from "@/lib/services/chat.service";
 import { cn } from "@/lib/utils";
@@ -14,13 +14,13 @@ const CHEVRON_ICON = "/assets/icons/ui/Vector 3.svg";
 interface ChatInputProps {
   sessionId?: string;
   onMessageSent?: (msg: any) => void;
-  selectedModelId?: string;
+  selectedModel?: any;
 }
 
 export function ChatInput({
   sessionId,
   onMessageSent,
-  selectedModelId,
+  selectedModel,
 }: ChatInputProps) {
   const [prompt, setPrompt] = useState("");
   const [isSending, setIsSending] = useState(false);
@@ -34,7 +34,8 @@ export function ChatInput({
       let targetSessionId = sessionId;
 
       if (!targetSessionId) {
-        const session = await chatService.createSession(selectedModelId);
+        const modelId = selectedModel?._id || selectedModel?.id;
+        const session = await chatService.createSession(modelId);
         targetSessionId = session.id;
       }
 
@@ -77,9 +78,9 @@ export function ChatInput({
           background: `
       linear-gradient(
         90deg,
-        #D4D4D44D 30,
+        rgba(212, 212, 212, 0.3) 30%,
         #EAF2F2 50%,
-        #D4D4D44D 30%
+        rgba(212, 212, 212, 0.3) 30%
       )
     `,
         }}
@@ -112,7 +113,7 @@ export function ChatInput({
 
           <div className="flex items-center gap-[10px]">
             <button className="flex items-center justify-between gap-4 px-5 py-[10px] bg-white border border-[#E5E5E8] rounded-full text-[13px] font-semibold text-[#110C0C] hover:bg-gray-50 transition-all">
-              <span>Open AI GPT-4o mini</span>
+              <span>{selectedModel?.name || "Select Model"}</span>
               <img
                 src={CHEVRON_ICON}
                 alt=""

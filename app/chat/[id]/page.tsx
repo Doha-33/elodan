@@ -1,3 +1,4 @@
+
 'use client'
 
 import React, { useEffect, useState, useRef } from 'react'
@@ -6,7 +7,7 @@ import PageLayout from '@/components/PageLayout'
 import { ChatInput } from '@/app/start-chat/components/ChatInput'
 import { chatService } from '@/lib/services/chat.service'
 import { ChatMessage } from '@/types'
-import { RotateCcw, Copy, ThumbsUp, ThumbsDown, Check } from 'lucide-react'
+import { RotateCcw, Copy, ThumbsUp, ThumbsDown, Check, ChevronDown } from 'lucide-react'
 import { useToast } from '@/components/ui/Toast'
 
 const BOT_ICON = "/assets/icons/brands/gpt.svg"
@@ -18,6 +19,7 @@ export default function ChatSessionPage() {
   const [messages, setMessages] = useState<ChatMessage[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [copyingId, setCopyingId] = useState<string | null>(null)
+  const [modelName, setModelName] = useState("Open AI GPT-4o mini")
   const { showToast } = useToast()
   const messagesEndRef = useRef<HTMLDivElement>(null)
 
@@ -58,13 +60,12 @@ export default function ChatSessionPage() {
       showToast("Regenerating response...", "info")
       try {
         const response = await chatService.sendMessage(sessionId, lastUserMsg.content)
-        // نأخذ رد الذكاء الاصطناعي فقط لتجنب مضاعفة رسالة المستخدم
         const aiResponse = response.find(m => m.role === 'assistant')
         if (aiResponse) {
           setMessages(prev => {
             const filtered = prev.filter(m => m.id !== 'temp-ai')
-            // إذا كانت آخر رسالة هي assistant، نستبدلها
-            if (filtered[filtered.length - 1].role === 'assistant') {
+            const lastMsg = filtered[filtered.length - 1];
+            if (lastMsg && lastMsg.role === 'assistant') {
               return [...filtered.slice(0, -1), aiResponse]
             }
             return [...filtered, aiResponse]
@@ -89,8 +90,17 @@ export default function ChatSessionPage() {
 
   return (
     <PageLayout>
-      <div className="flex flex-col h-[calc(100vh-120px)] bg-white font-[Inter]">
-        <div className="flex-1 overflow-y-auto px-4 py-8 space-y-10 scrollbar-hide">
+      <div className="flex flex-col h-[calc(100vh-80px)] bg-white font-[Inter]">
+        {/* Model Selection Header */}
+        <div className="px-6 py-4 flex items-center">
+           <button className="flex items-center gap-2 px-3 py-1.5 bg-[#F8F8F8] border border-[#E5E5E8] rounded-xl text-[13px] font-bold text-[#110C0C] hover:bg-gray-100 transition-all">
+             {modelName}
+             <ChevronDown className="w-4 h-4 opacity-40" />
+           </button>
+        </div>
+
+        {/* Messages Container */}
+        <div className="flex-1 overflow-y-auto px-6 py-4 space-y-10 scrollbar-hide elegant-scroll">
           {isLoading ? (
             <div className="flex items-center justify-center h-full">
               <div className="w-8 h-8 border-4 border-[#110C0C]/10 border-t-[#110C0C] rounded-full animate-spin" />
@@ -108,9 +118,6 @@ export default function ChatSessionPage() {
                    />
                 </div>
                 <div className="flex flex-col gap-2 max-w-[85%]">
-                  {msg.role === 'assistant' && (
-                    <span className="text-[13px] font-bold text-[#110C0C]/60 mb-1 ml-1">ChatGPT</span>
-                  )}
                   <div className={`p-5 rounded-[22px] text-[15px] leading-relaxed shadow-sm transition-all duration-300 ${
                     msg.role === 'user' 
                       ? 'bg-[#110C0C] text-white rounded-tr-none' 
@@ -162,8 +169,8 @@ export default function ChatSessionPage() {
           <div ref={messagesEndRef} />
         </div>
 
-        <div className="pt-4">
-          {/* Removed {null} children to fix required children type error */}
+        {/* Input area */}
+        <div className="pt-2 px-4 pb-4">
           <ChatInput sessionId={sessionId} onMessageSent={handleNewMessages} />
         </div>
       </div>

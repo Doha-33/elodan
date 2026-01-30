@@ -1,46 +1,46 @@
+
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { chatService } from '@/lib/services/chat.service'
+import { Loader2 } from 'lucide-react'
 
-const MODEL_ICONS = {
-  gpt5: "/assets/icons/brands/gpt.svg",
-  gemini: "/assets/icons/brands/gemini.svg",
-  claude: "/assets/icons/brands/Component 1-1.svg",
-  gpt4o: "/assets/icons/brands/gpt.svg",
+const MODEL_ICONS: Record<string, string> = {
+  Google: "/assets/icons/brands/gemini.svg",
+  Meta: "/assets/icons/brands/gpt.svg",
+  DeepSeek: "/assets/icons/brands/Component 1-1.svg",
+  MiniMax: "/assets/icons/brands/gpt.svg",
 }
 
 const ARROW_ICON = "/assets/icons/ui/Vector 3.svg";
 
-const models = [
-  {
-    id: 'gpt5',
-    name: 'OpenAI GPT-5',
-    description: "OpenAI's GPT-5 sets a new standard in...",
-    icon: MODEL_ICONS.gpt5,
-  },
-  {
-    id: 'gemini',
-    name: 'Google Gemini 2.5',
-    description: 'Gemini, Google\'s most advanced AI for you...',
-    icon: MODEL_ICONS.gemini,
-  },
-  {
-    id: 'claude',
-    name: 'Claude 3',
-    description: "Anthropic's Claude 3 is excellent for complex....",
-    icon: MODEL_ICONS.claude,
-  },
-  {
-    id: 'gpt4o',
-    name: 'OpenAI GPT-4o',
-    description: "Open AI's GPT-4o is stronger and faster ....",
-    isPro: true,
-    icon: MODEL_ICONS.gpt4o,
-  },
-]
+interface AvailableModelsProps {
+  selectedModelId?: string;
+  onSelect: (model: any) => void;
+}
 
-export function AvailableModels() {
-  const [selectedModel, setSelectedModel] = useState<string | null>(null)
+export function AvailableModels({ selectedModelId, onSelect }: AvailableModelsProps) {
+  const [models, setModels] = useState<any[]>([])
+  const [isLoading, setIsLoading] = useState(true)
+
+  useEffect(() => {
+    const fetchModels = async () => {
+      try {
+        const data = await chatService.getModels()
+        setModels(data)
+        // Auto-select default model if nothing is selected
+        if (!selectedModelId) {
+          const defaultModel = data.find((m: any) => m.isDefault);
+          if (defaultModel) onSelect(defaultModel);
+        }
+      } catch (error) {
+        console.error("Failed to fetch models", error)
+      } finally {
+        setIsLoading(false)
+      }
+    }
+    fetchModels()
+  }, [])
 
   return (
     <div className="max-w-[948px] mx-auto w-full px-4 mb-24 font-[Inter]" data-node-id="273:7360">
@@ -57,52 +57,61 @@ export function AvailableModels() {
 
       {/* Model Cards Grid */}
       <div className="relative group/carousel">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          {models.map((model) => {
-            const isSelected = selectedModel === model.id
-            const isHovered = false // Will be handled by CSS hover
+        {isLoading ? (
+          <div className="flex items-center justify-center h-[135px] w-full">
+            <Loader2 className="w-8 h-8 animate-spin text-[#F04549]" />
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {models.map((model) => {
+              const modelId = model._id || model.id
+              const isSelected = selectedModelId === modelId
 
-            return (
-              <button
-                key={model.id}
-                onClick={() => setSelectedModel(model.id)}
-                className={`
-                  group/card relative bg-white border rounded-[16px] 
-                  w-full h-[135px] px-5 py-4
-                  flex flex-col items-start gap-2
-                  transition-all duration-200 cursor-pointer
-                  ${isSelected 
-                    ? 'border-[#F04549] bg-[#F04549]/5' 
-                    : 'border-[#EFEFEF] hover:border-[#E5E5E8] hover:bg-[#F8F8F8]'
-                  }
-                `}
-                data-node-id="1:9468"
-              >
-                {/* Icon */}
-                <div className="w-[18px] h-[18px] flex-shrink-0">
-                  <img src={model.icon} alt="" className="w-full h-full object-contain" />
-                </div>
+              return (
+                <button
+                  key={modelId}
+                  onClick={() => onSelect(model)}
+                  className={`
+                    group/card relative bg-white border rounded-[16px] 
+                    w-full h-[135px] px-5 py-4
+                    flex flex-col items-start gap-2
+                    transition-all duration-200 cursor-pointer
+                    ${isSelected 
+                      ? 'border-[#F04549] bg-[#F04549]/5 shadow-sm' 
+                      : 'border-[#EFEFEF] hover:border-[#E5E5E8] hover:bg-[#F8F8F8]'
+                    }
+                  `}
+                >
+                  {/* Icon */}
+                  <div className="w-[18px] h-[18px] flex-shrink-0">
+                    <img 
+                        src={MODEL_ICONS[model.provider] || "/assets/icons/brands/gemini.svg"} 
+                        alt={model.name} 
+                        className="w-full h-full object-contain" 
+                    />
+                  </div>
 
-                {/* Title and Pro Badge */}
-                <div className="flex items-center justify-between w-full">
-                  <h4 className="text-[15px] font-semibold leading-[22px] text-[#110C0C] flex items-center gap-2">
-                    {model.name}
-                    {model.isPro && (
-                      <span className="px-1.5 py-0.5 bg-[#F04549]/10 text-[#F04549] text-[10px] font-bold uppercase rounded-md">
-                        Pro
-                      </span>
-                    )}
-                  </h4>
-                </div>
+                  {/* Title and Pro Badge */}
+                  <div className="flex items-center justify-between w-full">
+                    <h4 className="text-[15px] font-semibold leading-[22px] text-[#110C0C] flex items-center gap-2 truncate">
+                      {model.name}
+                      {!model.isFree && (
+                        <span className="px-1.5 py-0.5 bg-[#F04549]/10 text-[#F04549] text-[10px] font-bold uppercase rounded-md">
+                          Pro
+                        </span>
+                      )}
+                    </h4>
+                  </div>
 
-                {/* Description */}
-                <p className="text-[13px] font-normal leading-[13px] text-[#888888]">
-                  {model.description}
-                </p>
-              </button>
-            )
-          })}
-        </div>
+                  {/* Description */}
+                  <p className="text-[13px] font-normal leading-[1.3] text-[#888888] text-left line-clamp-2">
+                    {model.description}
+                  </p>
+                </button>
+              )
+            })}
+          </div>
+        )}
 
         {/* Carousel Arrow */}
         <button 

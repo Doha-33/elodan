@@ -1,3 +1,4 @@
+
 "use client";
 
 import Link from "next/link";
@@ -8,6 +9,8 @@ import { useEffect, useState, useMemo, useRef } from "react";
 import { chatService } from "@/lib/services/chat.service";
 import { ChatSession } from "@/types";
 import { useAuth } from "@/hooks/useAuth";
+import { useConfirm } from "@/components/ui/ConfirmModal";
+import { useToast } from "@/components/ui/Toast";
 import { MoreHorizontal, Search, Pin as PinIcon, Trash2, Edit3, Palette, X, Check } from "lucide-react";
 
 const navigationItems = [
@@ -33,6 +36,8 @@ const PRESET_COLORS = ["#5A0A0A", "#110C0C", "#9A57FF", "#22C55E", "#3B82F6", "#
 export default function Sidebar({ isOpen = true, onClose, isCollapsed = false, onToggleCollapse }: any) {
   const pathname = usePathname();
   const { isAuthenticated, isLoading: isAuthLoading } = useAuth();
+  const { confirm } = useConfirm();
+  const { showToast } = useToast();
   const [sessions, setSessions] = useState<ChatSession[]>([]);
   const [search, setSearch] = useState("");
   
@@ -56,10 +61,22 @@ export default function Sidebar({ isOpen = true, onClose, isCollapsed = false, o
   }, [pathname, isAuthenticated, isAuthLoading]);
 
   const handleDeleteSession = async (id: string) => {
+    const ok = await confirm({
+      title: 'Delete conversation',
+      message: 'You will no longer see this conversation here',
+      confirmText: 'Delete',
+      confirmStyle: 'danger',
+    });
+
+    if (!ok) return;
+
     try {
       await chatService.deleteSession(id);
       setSessions(prev => prev.filter(s => s.id !== id));
-    } catch (e) {}
+      showToast("Conversation deleted", "success");
+    } catch (e) {
+      showToast("Failed to delete conversation", "error");
+    }
   };
 
   const saveRename = async () => {
@@ -107,7 +124,7 @@ export default function Sidebar({ isOpen = true, onClose, isCollapsed = false, o
 
   return (
     <>
-      {isOpen && onClose && <div className="lg:hidden fixed inset-0 bg-black/50 z-40" onClick={onClose} />}
+      {isOpen && onClose && <div className="fixed inset-0 bg-black/50 z-40 lg:hidden" onClick={onClose} />}
       <aside className={cn("bg-white text-[#110C0C] flex flex-col h-screen fixed left-0 top-0 z-50 transition-all duration-300 lg:translate-x-0 border-r border-[#E5E5E8] overflow-x-hidden font-[Inter] elegant-scroll", isCollapsed ? "w-[72px]" : "w-[245px]", isOpen ? "translate-x-0" : "-translate-x-full")}>
         <div className={cn("pt-5 px-5 flex items-center gap-3 h-[70px]", isCollapsed ? "justify-center" : "justify-start")}>
           <button onClick={onToggleCollapse} className="p-1 hover:bg-gray-100 rounded-md">
@@ -133,7 +150,7 @@ export default function Sidebar({ isOpen = true, onClose, isCollapsed = false, o
                 <input type="text" placeholder="Search" value={search} onChange={(e) => setSearch((e.target as HTMLInputElement).value)} className="w-full pl-10 pr-4 py-2 bg-white border border-[#E5E5E8] rounded-xl text-[14px] focus:ring-1 focus:ring-[#110C0C] outline-none" />
               </div>
 
-              {["today", "yesterday", "older"].map(key => groupedSessions[key].length > 0 && (
+              {["today", "yesterday", "older"].map(key => (groupedSessions[key].length > 0 && (
                 <div key={key} className="mb-6">
                   <h3 className="text-[13px] font-medium text-[#8A8A8A] mb-2 px-3 capitalize">{key}</h3>
                   {groupedSessions[key].map((s: any) => (
@@ -148,7 +165,7 @@ export default function Sidebar({ isOpen = true, onClose, isCollapsed = false, o
                     />
                   ))}
                 </div>
-              ))}
+              )))}
             </div>
           )}
         </nav>

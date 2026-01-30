@@ -133,7 +133,7 @@ export function GeneratorCard({
           )}
 
           {/* Small Square Preview for Image-based transformations (Source Image) */}
-          {(type === "image-to-image" || type === "image-to-video") && (
+          {/* {(type === "image-to-image" || type === "image-to-video") && (
             <div className="absolute top-3 left-3 w-[64px] h-[77px] bg-white/30 rounded-lg border border-white/40 backdrop-blur-md shadow-xl overflow-hidden z-10 transition-all duration-500 group-hover:translate-x-1 group-hover:translate-y-1">
               {sourceImageSrc ? (
                 <img
@@ -149,24 +149,7 @@ export function GeneratorCard({
                 />
               )}
             </div>
-          )}
-
-          {type === "text-to-voice" && (
-            <div className="relative flex items-center justify-center group">
-              <img
-                src="/assets/videos/sound.gif"
-                alt="sound"
-                className="
-  w-[150px] h-[150px]
-  opacity-0 scale-75
-  -translate-y-4
-  transition-all duration-300 ease-out
-  group-hover:opacity-100
-  group-hover:scale-110
-"
-              />
-            </div>
-          )}
+          )} */}
 
         </div>
 

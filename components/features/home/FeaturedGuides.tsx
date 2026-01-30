@@ -8,38 +8,37 @@ const guides = [
   {
     title: "Text to image",
     description: "Generate your text into images",
-    imageSrc:
-      "/assets/images/gallery/texttoimg.png",
+    imageSrc: "/assets/images/gallery/80.jpg",
     defaultPrompt: "Boy in club",
     type: "text-to-image" as const,
   },
   {
     title: "Image to image",
     description: "Let Your Image Inspire Another",
-    imageSrc: "/assets/images/gallery/imgtoimg2.jpg",
-    sourceImageSrc: "/assets/images/gallery/imgtoimg1.jpg", // Example source image
+    defaultPrompt: "Boy in club",
+    imageSrc: "/assets/images/gallery/082.png",
+    sourceImageSrc: "/assets/images/gallery/082.png", // Example source image
     type: "image-to-image" as const,
   },
   {
     title: "Text to video",
     description: "Generate your text into videos",
-    imageSrc: "/assets/images/gallery/veo2-t2v.png",
-    videoSrc: "/assets/videos/veo2-t2v.mp4",
-    defaultPrompt: "Snowy little tiger",
+    imageSrc: "/assets/images/gallery/vidImg.png",
+    videoSrc: "/assets/videos/3.mp4",
+    defaultPrompt: "A surreal cinematic interior with glossy deep-red tiled walls and floors, forming a narrow corridor lined with identical doors on both sides. A well-dressed man in a dark suit stands in the center, pushing against a door as if trapped in an endless architectural loop. Mirrors and reflections create multiple versions of him, slightly delayed and distorted. The environment feels symmetrical, unsettling, and precise. Overhead soft white lighting reflects sharply on the tiles. Hyper-clean surfaces, brutalist geometry, psychological tension, cinematic depth, ultra-realistic textures, no text, no logos.Camera slowly dollies forward through the corridor → subtle fisheye distortion increases → reflections multiply → cut to top-down view revealing the corridor forming a perfect geometric loop → the man appears centered inside an impossible architectural ring → slow rotation from above.",
     type: "text-to-video" as const,
   },
   {
     title: "Image to video",
     description: "Bring your photos to life",
-    imageSrc:
-      "/assets/images/gallery/imgtovid.png",
-    videoSrc: "/assets/videos/imgtovid.mp4",
+    defaultPrompt: "Boy in club",
+    imageSrc: "/assets/images/gallery/014.jpg",
     type: "image-to-video" as const,
   },
   {
     title: "Text to voice",
     description: "Let Your text Speak",
-    imageSrc: "/assets/images/gallery/Rectangle 7850.png",
+    imageSrc: "/assets/images/gallery/Text to voice.jpg",
     defaultPrompt: "Experience the magic of voice...",
     type: "text-to-voice" as const,
   },
@@ -60,7 +59,10 @@ export function FeaturedGuides() {
         </div>
 
         <div className="relative">
-          <div className="overflow-x-auto pb-4 -mx-4 px-4 lg:mx-0 lg:px-0 elegant-scroll">
+          <div
+            className="overflow-x-auto no-scrollbar
+ pb-4 -mx-4 px-4 lg:mx-0 lg:px-0"
+          >
             <div className="flex gap-2 min-w-max lg:min-w-0 lg:grid lg:grid-cols-5">
               {guides.map((guide, index) => (
                 <div

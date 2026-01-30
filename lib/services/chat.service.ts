@@ -3,6 +3,16 @@ import { API_ENDPOINTS } from '../config'
 import { ChatMessage, ChatSession } from '@/types'
 
 export const chatService = {
+  // Added getModels to fetch available chat models from the backend
+  async getModels(): Promise<any[]> {
+    const response = await apiClient.get(API_ENDPOINTS.chat.getModels)
+    const models = response.data || response || []
+    return Array.isArray(models) ? models.map((m: any) => ({
+      ...m,
+      id: m._id || m.id
+    })) : []
+  },
+
   async createSession(modelId?: string): Promise<ChatSession> {
     const response = await apiClient.post(API_ENDPOINTS.chat.createSession, { modelId })
     const session = response.data || response

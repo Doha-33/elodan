@@ -38,11 +38,14 @@ export function TemplatesSection() {
         </h3>
       </div>
 
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
+      <div className="flex gap-3 overflow-x-auto no-scrollbar pb-2">
         {templates.map((template, i) => (
           <div
             key={i}
-            className="group relative h-[147px] bg-[#F5F5F5] rounded-[28px] overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-700 cursor-pointer border border-[#E5E5E8] hover:border-[#110C0C]/20"
+            className="group relative h-[147px] w-[224px] shrink-0
+      bg-[#F5F5F5] rounded-[28px] overflow-hidden shadow-sm
+      hover:shadow-2xl transition-all duration-700 cursor-pointer
+      border border-[#E5E5E8] hover:border-[#110C0C]/20"
           >
             <video
               src={template.videoSrc}
@@ -53,7 +56,7 @@ export function TemplatesSection() {
               className="absolute inset-0 w-full h-full object-cover object-top transition-transform duration-1000 group-hover:scale-110"
             />
 
-            {/* Dark Gradient Overlay for readability */}
+            {/* overlay */}
             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-70 group-hover:opacity-60 transition-opacity" />
           </div>
         ))}

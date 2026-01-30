@@ -10,16 +10,10 @@ import { useToast } from "@/components/ui/Toast";
 import { compressImage } from "@/lib/utils/image";
 import { cn } from "@/lib/utils";
 import {
-  Upload,
   X,
-  Check,
   ChevronRight,
-  Video,
-  Clock,
-  Settings2,
 } from "lucide-react";
 
-const FLUX_ICON = "/assets/icons/brands/Component 1-2.svg";
 
 interface VideoSettingsProps {
   activeTab?: string;
@@ -262,7 +256,7 @@ export function VideoSettings({
           <label className="block text-[13px] font-medium text-[#110C0C]">Model</label>
           <button onClick={() => setOpenDropdown("model")} className="w-full h-[64px] flex items-center justify-between p-4 bg-white rounded-2xl shadow-sm hover:shadow-md transition-all">
             <div className="flex items-center gap-3">
-              <img src={FLUX_ICON} className="w-9 h-9 rounded-lg" alt="Model" />
+              <img src={selectedModel?.icon || "/assets/icons/brands/Component 1-2.svg"} className="w-9 h-9 rounded-lg" alt="Model" />
               <span className="text-[14px] font-bold text-[#110C0C]">{selectedModel?.name || "Select Model"}</span>
             </div>
             <ChevronRight className="w-3.5 h-3.5 text-[#8A8A8A]" />
@@ -304,7 +298,7 @@ export function VideoSettings({
             <div className="max-h-[400px] overflow-y-auto p-2 space-y-1">
               {models.map((m) => (
                 <button key={m._id || m.id} onClick={() => { setSelectedModel(m); setOpenDropdown(null); }} className={cn("w-full flex items-center gap-4 p-4 rounded-2xl transition-all text-left", selectedModel?._id === m._id ? "bg-purple-50" : "hover:bg-gray-50")}>
-                  <div className="w-12 h-12 rounded-xl bg-[#110C0C] flex items-center justify-center text-white"><Video className="w-6 h-6" /></div>
+                  <img src={m.icon || "/assets/icons/brands/Component 1-2.svg"} className="w-10 h-10 rounded-lg" alt={m.name} />
                   <div className="flex-1 min-w-0"><p className="text-[14px] font-bold text-[#110C0C]">{m.name}</p></div>
                 </button>
               ))}

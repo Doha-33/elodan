@@ -164,24 +164,6 @@ const exploreData = [
   },
   {
     id: 10,
-    videoUrl: "/assets/videos/1.mp4",
-    thumbnail:
-      "https://images.unsplash.com/photo-1485846234645-a62644ef7467?auto=format&fit=crop&q=80&w=600",
-    category: "Video",
-    type: "Text to video",
-    prompt:
-      "Ultra-cinematic surreal desert scene set near the Great Pyramids of Giza at golden hour. A massive futuristic metallic loop highway rises organically from the desert sand, forming a perfect vertical ring. Multiple modern sports cars race through the loop at high speed, tires kicking up sand and dust. Motion blur on cars, sharp focus on the environment. Hyper-realistic lighting, dramatic shadows, volumetric sunlight, cinematic depth of field. The pyramids remain ancient, untouched, and monumental in the background, contrasting with the futuristic structure. Realistic physics, high realism, epic scale, IMAX-level cinematography, ultra-high resolution, clean composition, no text, no logos.Camera starts low at sand level, tracking alongside a speeding car → tilts upward as the car enters the vertical loop → wide cinematic reveal showing the full loop aligned with the pyramids → subtle slow-motion dust particles in the air → smooth stabilized camera, no shake.",
-    date: "12 October 2025",
-    settings: {
-      model: "Gen-3",
-      style: "Cyberpunk",
-      dimension: "16:9",
-      autoSpeech: "None",
-      duration: "10s",
-    },
-  },
-  {
-    id: 11,
     videoUrl: "/assets/videos/2.mp4",
     thumbnail:
       "https://images.unsplash.com/photo-1620641788421-7a1c342ea42e?auto=format&fit=crop&q=80&w=600",
@@ -198,6 +180,24 @@ const exploreData = [
       dimension: "9:16",
       autoSpeech: "None",
       duration: "5s",
+    },
+  },
+  {
+    id: 11,
+    videoUrl: "/assets/videos/1.mp4",
+    thumbnail:
+      "https://images.unsplash.com/photo-1485846234645-a62644ef7467?auto=format&fit=crop&q=80&w=600",
+    category: "Video",
+    type: "Text to video",
+    prompt:
+      "Ultra-cinematic surreal desert scene set near the Great Pyramids of Giza at golden hour. A massive futuristic metallic loop highway rises organically from the desert sand, forming a perfect vertical ring. Multiple modern sports cars race through the loop at high speed, tires kicking up sand and dust. Motion blur on cars, sharp focus on the environment. Hyper-realistic lighting, dramatic shadows, volumetric sunlight, cinematic depth of field. The pyramids remain ancient, untouched, and monumental in the background, contrasting with the futuristic structure. Realistic physics, high realism, epic scale, IMAX-level cinematography, ultra-high resolution, clean composition, no text, no logos.Camera starts low at sand level, tracking alongside a speeding car → tilts upward as the car enters the vertical loop → wide cinematic reveal showing the full loop aligned with the pyramids → subtle slow-motion dust particles in the air → smooth stabilized camera, no shake.",
+    date: "12 October 2025",
+    settings: {
+      model: "Gen-3",
+      style: "Cyberpunk",
+      dimension: "16:9",
+      autoSpeech: "None",
+      duration: "10s",
     },
   },
   {
@@ -295,32 +295,33 @@ export function ExploreImagineSection() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        <div className="columns-2 sm:columns-3 lg:columns-4 gap-6 [column-fill:_balance]">
           {filteredData.map((item) => (
             <div
               key={item.id}
-              className="group relative overflow-hidden rounded-[24px] bg-[#F5F5F5] border border-[#E5E5E8] cursor-pointer aspect-[3/4]"
               onClick={() => setSelectedItem(item)}
+              className="group relative overflow-hidden rounded-[24px] bg-[#F5F5F5]
+  border border-[#E5E5E8] cursor-pointer mb-6 break-inside-avoid shadow-sm hover:shadow-xl transition-all"
             >
               {/* Content Preview - Videos play always */}
               {item.category === "Image" ? (
                 <img
                   src={item.src}
                   alt=""
-                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                  className="w-full h-auto object-cover transition-transform duration-700 group-hover:scale-105"
                 />
               ) : (
-                <div className="absolute inset-0 w-full h-full bg-black">
+                <div className="relative w-full bg-black">
                   <video
                     src={item.videoUrl}
-                    className="w-full h-full object-cover"
+                    className="w-full h-auto object-cover"
                     autoPlay
                     loop
                     muted
                     playsInline
                     poster={item.thumbnail}
                   />
-                  {/* Video Indicator */}
+
                   <div className="absolute bottom-4 left-4 bg-black/40 backdrop-blur-md px-2 py-1 rounded-md">
                     <Play className="w-3 h-3 text-white fill-current" />
                   </div>

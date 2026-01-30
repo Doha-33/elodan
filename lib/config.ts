@@ -1,3 +1,4 @@
+
 // API Configuration
 // Use localhost for development, production URL for deployment
 const isDev = typeof window !== 'undefined' && window.location.hostname === 'localhost';
@@ -51,6 +52,7 @@ export const API_ENDPOINTS = {
 
   // Chat
   chat: {
+    getModels: '/chat/models',
     createSession: '/chat/sessions',
     getSessions: '/chat/sessions',
     deleteSession: (sessionId: string) => `/chat/sessions/${sessionId}`,

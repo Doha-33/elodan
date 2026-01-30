@@ -4,11 +4,11 @@ import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 
 const HERO_VIDEO = "/assets/videos/ElodanLogo.mp4";
-const POSTER_IMAGE = "/assets/images/backgrounds/bg.png";
 
 export function HeroSection() {
   const [shouldLoad, setShouldLoad] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
+  const [videoReady, setVideoReady] = useState(false);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -18,7 +18,7 @@ export function HeroSection() {
           observer.disconnect();
         }
       },
-      { threshold: 0.1 }
+      { threshold: 0.1 },
     );
 
     if (containerRef.current) {
@@ -41,17 +41,14 @@ export function HeroSection() {
             loop
             muted
             playsInline
-            poster={POSTER_IMAGE}
             className="absolute inset-0 w-full h-full object-cover animate-in fade-in duration-1000"
           >
             <source src={HERO_VIDEO} type="video/mp4" />
           </video>
         ) : (
-          <img
-            src={POSTER_IMAGE}
-            alt=""
-            className="absolute inset-0 w-full h-full object-cover opacity-50"
-          />
+          <div className="absolute inset-0 flex items-center justify-center bg-[#E6D4D4]">
+            <div className="w-10 h-10 border-4 border-white/30 border-t-white rounded-full animate-spin" />
+          </div>
         )}
         <div className="absolute inset-0 bg-black/10" />
       </div>
