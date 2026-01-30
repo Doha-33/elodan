@@ -2,61 +2,80 @@ import { apiClient } from '../api-client'
 import { API_ENDPOINTS } from '../config'
 
 export interface GenerateEffectData {
-  imageUrl?: string
-  image?: File
+  image: File
   effectScene: string
   prompt?: string
 }
 
+export interface ModelFilters {
+  requiresFace?: boolean
+  category?: string
+}
+
 export const videoEffectService = {
-  async getModels(): Promise<any[]> {
-    const response = await apiClient.get(API_ENDPOINTS.videoEffects.getModels)
+  /**
+   * Fetches available Kling AI models and their nested scenes.
+   * Supports filtering via query parameters.
+   * Endpoints handled:
+   * - Get face Video Effects (?requiresFace=true)
+   * - Get non face Video Effects (?requiresFace=false)
+   * - Get Video Effects by Category (?category=...)
+   */
+  async getModels(filters?: ModelFilters): Promise<any[]> {
+    const response = await apiClient.get(API_ENDPOINTS.videoEffects.getModels, {
+      params: filters
+    })
     return response.data || []
   },
 
+  /**
+   * Fetches category counts for the sidebar/tabs
+   * Endpoint: /video-effects/categories
+   */
   async getCategories(): Promise<any> {
     const response = await apiClient.get(API_ENDPOINTS.videoEffects.categories)
     return response.data || { categories: [] }
   },
 
+  /**
+   * Generates video effect using multipart/form-data
+   * Payload: image (File), effectScene (String), prompt (Optional String)
+   */
   async generate(data: GenerateEffectData): Promise<any> {
-    const { image, ...restData } = data
+    const formData = new FormData()
+    formData.append('image', data.image)
+    formData.append('effectScene', data.effectScene)
+    if (data.prompt) formData.append('prompt', data.prompt)
     
-    if (image) {
-      const formData = new FormData()
-      // Send effectScene and prompt as part of form data
-      if (restData.effectScene) formData.append('effectScene', restData.effectScene)
-      if (restData.prompt) formData.append('prompt', restData.prompt)
-      
-      // Use the key 'image' as specified in the prompt
-      formData.append('image', image)
-      
-      const response = await apiClient.postFormData(API_ENDPOINTS.videoEffects.generate, formData)
-      return response.data // Contains data object with videoUrl etc.
-    } else {
-      const response = await apiClient.post(API_ENDPOINTS.videoEffects.generate, restData)
-      return response.data
-    }
+    const response = await apiClient.postFormData(API_ENDPOINTS.videoEffects.generate, formData)
+    return response.data || response
   },
 
+  /**
+   * Gets generation history with internal ID mapping
+   */
   async getHistory(limit = 10, skip = 0): Promise<any[]> {
     const response = await apiClient.get(API_ENDPOINTS.videoEffects.getHistory, {
       params: { limit, skip }
     })
-    // Based on provided JSON: { success: true, count: 1, data: [...] }
     return (response.data || []).map((item: any) => ({
       ...item,
-      id: item._id || item.id // Ensure we have a consistent id field
+      id: item._id || item.id
     }))
   },
 
+  /**
+   * Saves temporary effect generation to user's permanent gallery
+   */
   async saveToGallery(effectId: string): Promise<any> {
     const response = await apiClient.post(API_ENDPOINTS.videoEffects.save(effectId))
-    return response.data
+    return response.data || response
   },
 
+  /**
+   * Deletes a video effect generation
+   */
   async deleteEffect(effectId: string): Promise<void> {
-    // Standard delete endpoint for video effects
     await apiClient.delete(`/video-effects/${effectId}`)
   }
 }

@@ -8,7 +8,7 @@ import { VideoLightbox } from './components/VideoLightbox'
 import { videoEffectService } from '@/lib/services/videoEffect.service'
 import { useAuth } from '@/hooks/useAuth'
 import { cn } from '@/lib/utils'
-import { Plus, History } from 'lucide-react'
+import { Plus, History, Sparkles } from 'lucide-react'
 
 export default function VideoEffectPage() {
   const [history, setHistory] = useState<any[]>([])
@@ -46,7 +46,7 @@ export default function VideoEffectPage() {
 
   return (
     <PageLayout>
-      <div className="lg:hidden flex p-1.5 bg-[#E9E7E7] rounded-2xl mb-4 w-full max-w-[320px] mx-auto shadow-inner">
+      <div className="lg:hidden flex p-1.5 bg-[#E9E7E7] rounded-2xl mb-4 w-full max-w-[320px] mx-auto shadow-inner font-[Inter]">
         <button 
           onClick={() => setMobileView('editor')}
           className={cn(
@@ -63,11 +63,11 @@ export default function VideoEffectPage() {
             mobileView === 'history' ? "bg-white text-[#110C0C] shadow-md" : "text-[#8A8A8A]"
           )}
         >
-          <History className="w-4 h-4" /> History
+          <History className="w-4 h-4" /> My Library
         </button>
       </div>
 
-      <div className="flex flex-col h-[calc(100vh-180px)] lg:h-[calc(100vh-90px)] bg-[#FEFBFB]">
+      <div className="flex flex-col h-[calc(100vh-180px)] lg:h-[calc(100vh-90px)] bg-[#FEFBFB] rounded-[2px] overflow-hidden border border-[#F0F0F3] shadow-sm font-[Inter]">
         <div className="flex flex-1 overflow-hidden flex-col lg:flex-row">
           <div className={cn(
             "h-full lg:block",
@@ -84,16 +84,16 @@ export default function VideoEffectPage() {
           )}>
             {isLoading ? (
               <div className="flex-1 flex items-center justify-center">
-                <div className="w-8 h-8 border-4 border-[#110C0C]/10 border-t-purple-500 rounded-full animate-spin" />
+                <div className="w-10 h-10 border-4 border-gray-100 border-t-red-600 rounded-full animate-spin" />
               </div>
             ) : history.length > 0 ? (
               <div className="flex-1 flex flex-col overflow-hidden">
-                <div className="px-6 lg:px-8 pt-6 pb-2 border-b border-[#E5E5E8] flex items-center justify-between">
-                   <div className="flex items-center gap-4">
-                      <div className="px-4 lg:px-5 py-1.5 bg-[#F8F8F8] border border-[#E5E5E8] rounded-full">
-                        <span className="text-[12px] lg:text-[13px] font-black text-[#110C0C] uppercase tracking-tighter">My Library</span>
+                <div className="px-8 lg:px-10 pt-8 pb-4 border-b border-[#E5E5E8] flex items-center justify-between bg-white z-10">
+                   <div className="flex items-center gap-5">
+                      <div className="px-5 py-2 bg-[#F8F8F8] border border-[#E5E5E8] rounded-full">
+                        <span className="text-[13px] font-black text-[#110C0C] uppercase tracking-tighter">Effect History</span>
                       </div>
-                      <span className="text-[11px] lg:text-[12px] text-[#8A8A8A] font-bold uppercase tracking-widest">
+                      <span className="text-[12px] text-[#8A8A8A] font-black uppercase tracking-widest opacity-60">
                         {history.length} Creations
                       </span>
                    </div>
@@ -105,17 +105,14 @@ export default function VideoEffectPage() {
                 />
               </div>
             ) : (
-              <div className="flex-1 flex items-center justify-center text-[#8A8A8A] flex-col gap-6 font-[Inter]">
-                <div className="w-20 h-20 lg:w-24 lg:h-24 bg-purple-50 rounded-[2rem] lg:rounded-[2.5rem] flex items-center justify-center border border-purple-100/50 shadow-inner">
-                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" className="text-purple-300 lg:w-[40px] lg:h-[40px]">
-                    <path d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14v-4zM3 8a2 2 0 012-2h8a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2V8z" fill="currentColor" fillOpacity="0.3" />
-                    <path d="M12 2L15 8L22 9L17 14L18.5 21L12 17L5.5 21L7 14L2 9L9 8L12 2Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                  </svg>
+              <div className="flex-1 flex items-center justify-center text-[#8A8A8A] flex-col gap-8 p-10">
+                <div className="w-24 h-24 lg:w-32 lg:h-32 bg-gray-50 rounded-[40px] flex items-center justify-center border border-gray-100 shadow-inner">
+                  <Sparkles className="w-10 h-10 lg:w-14 lg:h-14 text-gray-200" />
                 </div>
-                <div className="text-center px-6">
-                  <p className="text-lg font-black text-[#110C0C] mb-1 uppercase tracking-tighter">No effects yet</p>
-                  <p className="text-[13px] font-medium text-gray-400 max-w-[320px]">
-                    Bring your images to life on the sidebar.
+                <div className="text-center space-y-2">
+                  <p className="text-[20px] font-black text-[#110C0C] uppercase tracking-tighter">Your Library is empty</p>
+                  <p className="text-[14px] font-medium text-gray-400 max-w-[320px] leading-relaxed">
+                    Upload a photo and select an AI template to generate stunning motion effects.
                   </p>
                 </div>
               </div>
