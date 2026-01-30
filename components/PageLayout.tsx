@@ -56,7 +56,6 @@ export default function PageLayout({
       <div
         className={cn(
           "flex flex-col min-h-screen transition-all duration-500 ease-in-out",
-          // نستخدم padding-left بدلاً من margin-left لضمان بقاء الـ box model داخل الـ 100% عرض
           isCollapsed ? "lg:pl-[72px]" : "lg:pl-[245px]",
         )}
       >
@@ -71,7 +70,7 @@ export default function PageLayout({
         <main className="flex-1 overflow-x-hidden bg-[#F9F9F9] scrollbar-elodan pt-[66px]">
           <div
             className={cn(
-              "mx-auto w-full transition-all duration-500 ease-in-out px-4 md:px-8 py-6",
+              "mx-auto w-full transition-all duration-500 ease-in-out px-2 md:px-4 py-2",
               // نتحكم في أقصى عرض للمحتوى الداخلي لضمان التمركز الجيد
               isCollapsed ? "max-w-[1440px]" : "max-w-[1240px]",
             )}

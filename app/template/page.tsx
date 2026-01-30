@@ -67,7 +67,7 @@ export default function VideoEffectPage() {
         </button>
       </div>
 
-      <div className="flex flex-col h-[calc(100vh-180px)] lg:h-screen bg-[#FEFBFB]">
+      <div className="flex flex-col h-[calc(100vh-180px)] lg:h-[calc(100vh-90px)] bg-[#FEFBFB]">
         <div className="flex flex-1 overflow-hidden flex-col lg:flex-row">
           <div className={cn(
             "h-full lg:block",

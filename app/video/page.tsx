@@ -151,7 +151,7 @@ export default function VideoPage() {
         </button>
       </div>
 
-      <div className="flex flex-col lg:flex-row h-[calc(100vh-180px)] lg:h-[calc(100vh-140px)] bg-[#FEFBFB] overflow-hidden font-[Inter] rounded-[32px] border border-[#F0F0F3] shadow-sm">
+      <div className="flex flex-col lg:flex-row h-[calc(100vh-180px)] lg:h-[calc(100vh-90px)] bg-[#FEFBFB] overflow-hidden font-[Inter] rounded-[2px] border border-[#F0F0F3] shadow-sm">
         <div className={cn(
           "h-full lg:block", 
           mobileView === 'editor' ? "block w-full lg:w-auto" : "hidden"
