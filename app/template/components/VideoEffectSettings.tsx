@@ -416,10 +416,17 @@ export function VideoEffectSettings({
                       )}
                     </div>
                     <div>
-                      <span className="text-[13px] font-black leading-tight block uppercase tracking-tighter truncate text-[#110C0C]">
-                        {scene.name}
-                      </span>
-                      <div className="flex items-center gap-1.5 mt-1">
+                      <div className="flex items-center gap-2 mb-0.5">
+                        <span className="text-[13px] font-black leading-tight block uppercase tracking-tighter truncate text-[#110C0C]">
+                          {scene.name}
+                        </span>
+                        {scene.requiresFace && (
+                           <span className="px-1.5 py-0.5 bg-blue-50 text-blue-600 text-[8px] font-black uppercase rounded-md border border-blue-100">
+                             Face
+                           </span>
+                        )}
+                      </div>
+                      <div className="flex items-center gap-1.5">
                         <img
                           src="/assets/icons/ui/coin.svg"
                           className="w-3 h-3"
