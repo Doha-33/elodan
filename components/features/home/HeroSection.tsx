@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 
-const HERO_VIDEO = "/assets/videos/ElodanLogo.mp4";
+const HERO_VIDEO = "https://res.cloudinary.com/dom5mprmi/video/upload/v1/Elodan_Sakinah_W.O_Logo.mp4_mvvmqz.mp4";
 
 export function HeroSection() {
   const [shouldLoad, setShouldLoad] = useState(false);

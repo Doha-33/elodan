@@ -1,9 +1,16 @@
 
 // API Configuration
 // Use localhost for development, production URL for deployment
-const isDev = typeof window !== 'undefined' && window.location.hostname === 'localhost';
+const isDev = typeof window !== 'undefined' && 
+  (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
+
+const ENV_URL = process.env.NEXT_PUBLIC_API_URL;
+const DEFAULT_PROD_URL = 'https://Elodan-backend.vercel.app/api/v1';
+
 export const API_CONFIG = {
-  baseURL:  (process.env.NEXT_PUBLIC_API_URL || 'https://Elodan-backend.vercel.app/api/v1'),
+  baseURL: (isDev && (!ENV_URL || ENV_URL === DEFAULT_PROD_URL))
+           ? 'http://localhost:3000/api/v1'
+           : (ENV_URL || DEFAULT_PROD_URL),
   timeout: 120000,
   headers: {
     'Content-Type': 'application/json',

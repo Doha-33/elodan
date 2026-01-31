@@ -9,12 +9,14 @@ import { cn } from '@/lib/utils'
 import { Check, Diamond } from 'lucide-react'
 import Link from 'next/link'
 import { useAuth } from '@/hooks/useAuth'
+import { OfferModal } from './components/OfferModal'
 
 export default function PricingPage() {
   const [plans, setPlans] = useState<any[]>([])
   const [interval, setInterval] = useState<'monthly' | 'yearly'>('monthly')
   const [currentSub, setCurrentSub] = useState<any>(null)
   const [activeOffer, setActiveOffer] = useState<any>(null)
+  const [showOfferModal, setShowOfferModal] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
   const [processingId, setProcessingId] = useState<string | null>(null)
   const { showToast } = useToast()
@@ -104,7 +106,10 @@ export default function PricingPage() {
 
           {/* Offer Banner */}
           {activeOffer && (
-            <div className="max-w-2xl mx-auto mb-8 p-4 bg-[#5A0A0A]/10 border border-[#5A0A0A]/20 rounded-2xl flex items-center justify-between gap-4 animate-in fade-in slide-in-from-top-4 duration-1000">
+            <div 
+              onClick={() => setShowOfferModal(true)}
+              className="max-w-2xl mx-auto mb-8 p-4 bg-[#5A0A0A]/10 border border-[#5A0A0A]/20 rounded-2xl flex items-center justify-between gap-4 animate-in fade-in slide-in-from-top-4 duration-1000 cursor-pointer hover:bg-[#5A0A0A]/20 transition-all active:scale-[0.98]"
+            >
               <div className="flex items-center gap-3">
                 <div className="bg-[#5A0A0A] p-2 rounded-xl">
                   <Diamond className="w-5 h-5 text-white" />
@@ -121,6 +126,13 @@ export default function PricingPage() {
               </div>
             </div>
           )}
+
+          {/* Offer Modal */}
+          <OfferModal 
+            isOpen={showOfferModal} 
+            onClose={() => setShowOfferModal(false)} 
+            offer={activeOffer} 
+          />
 
           {/* Toggle Switch */}
           <div className="flex justify-center">

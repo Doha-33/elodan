@@ -226,16 +226,17 @@ export function ImageSettings({
           <label className="text-[12px] text-[#8A8A8A]">Model</label>
           <button
             onClick={() => setOpenDropdown("model")}
-            className="w-full flex items-center justify-between p-3 border border-[#E5E5E8] rounded-xl hover:bg-gray-50"
+            className="w-full h-fit flex items-center justify-between p-3 border border-[#E5E5E8] rounded-2xl hover:bg-gray-50 bg-white shadow-sm transition-all"
           >
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded flex items-center justify-center overflow-hidden">
+              <div className="w-9 h-9 rounded-lg flex items-center justify-center overflow-hidden bg-gray-50 border border-gray-100">
                 <img
-                  src="/assets/icons/brands/Component 1-2.svg"
-                  className="w-full h-full object-cover"
+                  src={selectedModel?.icon || "/assets/icons/brands/Component 1-2.svg"}
+                  className="w-full h-full object-contain"
+                  alt="Model"
                 />
               </div>
-              <span className="text-[14px] font-medium">
+              <span className="text-[14px] font-bold text-[#110C0C]">
                 {selectedModel?.name || "Select Model"}
               </span>
             </div>
@@ -337,16 +338,16 @@ export function ImageSettings({
           onClick={() => setOpenDropdown(null)}
         >
           <div
-            className="bg-white w-full max-w-[380px] rounded-2xl shadow-2xl overflow-hidden border border-[#E5E5E8]"
+            className="bg-white w-full max-w-[380px] rounded-[32px] shadow-2xl overflow-hidden border border-[#E5E5E8]"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="p-4 border-b flex justify-between items-center">
-              <span className="font-bold">Model</span>
-              <button onClick={() => setOpenDropdown(null)}>
-                <X className="w-5 h-5" />
+            <div className="p-5 border-b flex justify-between items-center">
+              <span className="font-bold text-[#110C0C]">Model</span>
+              <button onClick={() => setOpenDropdown(null)} className="p-1 hover:bg-gray-100 rounded-full transition-colors">
+                <X className="w-5 h-5 text-[#8A8A8A]" />
               </button>
             </div>
-            <div className="max-h-[400px] overflow-y-auto p-2 space-y-2 elegant-scroll">
+            <div className="max-h-[400px] overflow-y-auto p-2 space-y-1 elegant-scroll">
               {models.map((m) => (
                 <div
                   key={m._id}
@@ -354,16 +355,22 @@ export function ImageSettings({
                     setSelectedModel(m);
                     setOpenDropdown(null);
                   }}
-                  className="flex items-center gap-3 p-3 hover:bg-gray-50 rounded-xl cursor-pointer"
+                  className={cn(
+                    "flex items-center gap-4 p-4 hover:bg-gray-50 rounded-2xl cursor-pointer transition-all",
+                    selectedModel?._id === m._id ? "bg-[#F04549]/5 border border-[#F04549]/20" : "border border-transparent"
+                  )}
                 >
-                  <img
-                    src={m.icon || "/assets/icons/brands/gpt.svg"}
-                    className="w-10 h-10 rounded-lg"
-                  />
-                  <div className="flex-1">
-                    <p className="text-[14px] font-bold">{m.name}</p>
-                    <p className="text-[11px] text-[#8A8A8A] line-clamp-2">
-                      {m.description}
+                  <div className="w-10 h-10 rounded-lg overflow-hidden bg-gray-50 border border-gray-100 flex-shrink-0">
+                    <img
+                      src={m.icon || "/assets/icons/brands/Component 1-2.svg"}
+                      className="w-full h-full object-contain"
+                      alt={m.name}
+                    />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-[14px] font-bold text-[#110C0C]">{m.name}</p>
+                    <p className="text-[11px] text-[#8A8A8A] line-clamp-1">
+                      {m.description || m.provider}
                     </p>
                   </div>
                 </div>

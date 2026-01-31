@@ -83,9 +83,9 @@ export function AvailableModels({ selectedModelId, onSelect }: AvailableModelsPr
                   `}
                 >
                   {/* Icon */}
-                  <div className="w-[18px] h-[18px] flex-shrink-0">
+                  <div className="w-8 h-8 rounded-lg overflow-hidden bg-white border border-[#EFEFEF] p-1 flex items-center justify-center flex-shrink-0 shadow-sm transition-transform group-hover/card:scale-105">
                     <img 
-                        src={MODEL_ICONS[model.provider] || "/assets/icons/brands/gemini.svg"} 
+                        src={model.icon || MODEL_ICONS[model.provider] || "/assets/icons/brands/gemini.svg"} 
                         alt={model.name} 
                         className="w-full h-full object-contain" 
                     />

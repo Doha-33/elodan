@@ -39,7 +39,7 @@ export function VideoSettings({
   const [externalRefUrl, setExternalRefUrl] = useState<string | null>(null);
 
   const [openDropdown, setOpenDropdown] = useState<
-    "model" | "dim" | "duration" | null
+    "model" | "dim" | "res" | null
   >(null);
 
   const [settings, setSettings] = useState<any>({
@@ -175,17 +175,42 @@ export function VideoSettings({
     }
   };
 
-  const DIMENSIONS = [
-    { id: "1:1", name: "1:1 Square", w: 1, h: 1 },
-    { id: "16:9", name: "16:9 Widescreen", w: 16, h: 9 },
-    { id: "9:16", name: "9:16 Vertical", w: 9, h: 16 },
-    { id: "4:3", name: "4:3 Traditional", w: 4, h: 3 },
-  ];
+  const ASPECT_RATIO_LABELS: Record<string, string> = {
+    "1:1": "1:1 Square",
+    "16:9": "16:9 Widescreen",
+    "9:16": "9:16 Vertical",
+    "4:3": "4:3 Traditional",
+    "21:9": "21:9 Ultrawide",
+    "3:2": "3:2 Standard",
+    "2:3": "2:3 Portrait",
+  };
 
-  const DURATIONS = [4, 5, 6, 8, 10];
+  const availableDurations = useMemo(() => {
+    return selectedModel?.supportedDurations?.length > 0 ? selectedModel.supportedDurations : [5, 10];
+  }, [selectedModel]);
+
+  const availableRatios = useMemo(() => {
+    return selectedModel?.supportedAspectRatios?.length > 0 ? selectedModel.supportedAspectRatios : ["1:1", "16:9", "9:16", "4:3"];
+  }, [selectedModel]);
+
+  const availableResolutions = useMemo(() => {
+    return selectedModel?.supportedResolutions?.length > 0 ? selectedModel.supportedResolutions : ["720p", "1080p"];
+  }, [selectedModel]);
+
+  // Sync settings with selected model defaults
+  useEffect(() => {
+    if (selectedModel) {
+      setSettings((prev: any) => ({
+        ...prev,
+        duration: availableDurations.includes(prev.duration) ? prev.duration : availableDurations[0],
+        aspect_ratio: availableRatios.includes(prev.aspect_ratio) ? prev.aspect_ratio : availableRatios[0],
+        resolution: availableResolutions.includes(prev.resolution) ? prev.resolution : availableResolutions[0],
+      }));
+    }
+  }, [selectedModel, availableDurations, availableRatios, availableResolutions]);
 
   return (
-    <div className="w-[420px] h-full bg-white border-r border-[#E5E5E8] p-6 flex flex-col font-[Inter] overflow-y-auto scrollbar-hide relative">
+    <div className="w-[420px] h-full bg-white border-r border-[#E5E5E8] p-6 flex flex-col font-[Inter] overflow-y-auto scrollbar-hide relative text-left">
       <div className="mb-6">
         <TabSwitch
           tabs={[
@@ -238,7 +263,7 @@ export function VideoSettings({
         </div>
       )}
 
-      <div className="mb-6">
+      <div className="mb-6 text-left">
         <PromptInput
           value={prompt}
           onChange={setPrompt}
@@ -249,33 +274,43 @@ export function VideoSettings({
         />
       </div>
 
-      <div className="text-[14px] font-semibold text-[#110C0C] mb-4">Settings</div>
+      <div className="text-[14px] font-semibold text-[#110C0C] mb-4 text-left">Settings</div>
 
-      <div className="space-y-4">
+      <div className="space-y-4 text-left">
         <div className="bg-[#F5F5F5] p-4 rounded-[20px] space-y-2">
           <label className="block text-[13px] font-medium text-[#110C0C]">Model</label>
           <button onClick={() => setOpenDropdown("model")} className="w-full h-[64px] flex items-center justify-between p-4 bg-white rounded-2xl shadow-sm hover:shadow-md transition-all">
             <div className="flex items-center gap-3">
-              <img src={selectedModel?.icon || "/assets/icons/brands/Component 1-2.svg"} className="w-9 h-9 rounded-lg" alt="Model" />
+              <img src={selectedModel?.icon || "/assets/icons/brands/Component 1-2.svg"} className="w-9 h-9 rounded-lg object-contain bg-gray-50" alt="Model" />
               <span className="text-[14px] font-bold text-[#110C0C]">{selectedModel?.name || "Select Model"}</span>
             </div>
             <ChevronRight className="w-3.5 h-3.5 text-[#8A8A8A]" />
           </button>
         </div>
 
-        <div className="bg-[#F5F5F5] p-4 rounded-[20px] space-y-2">
-          <label className="block text-[13px] font-medium text-[#110C0C]">Dimension</label>
-          <button onClick={() => setOpenDropdown("dim")} className="w-full h-[64px] flex items-center justify-between p-4 bg-white rounded-2xl shadow-sm hover:shadow-md transition-all">
-             <span className="text-[14px] font-bold text-[#110C0C]">{DIMENSIONS.find(d => d.id === settings.aspect_ratio)?.name || settings.aspect_ratio}</span>
-             <ChevronRight className="w-3.5 h-3.5 text-[#8A8A8A]" />
-          </button>
+        <div className="grid grid-cols-2 gap-3">
+          <div className="bg-[#F5F5F5] p-4 rounded-[20px] space-y-2">
+            <label className="block text-[13px] font-medium text-[#110C0C]">Dimension</label>
+            <button onClick={() => setOpenDropdown("dim")} className="w-full h-[64px] flex items-center justify-between p-4 bg-white rounded-2xl shadow-sm hover:shadow-md transition-all">
+               <span className="text-[14px] font-bold text-[#110C0C]">{settings.aspect_ratio}</span>
+               <ChevronRight className="w-3.5 h-3.5 text-[#8A8A8A]" />
+            </button>
+          </div>
+
+          <div className="bg-[#F5F5F5] p-4 rounded-[20px] space-y-2">
+            <label className="block text-[13px] font-medium text-[#110C0C]">Resolution</label>
+            <button onClick={() => { if (availableResolutions.length > 1) setOpenDropdown("res") }} className="w-full h-[64px] flex items-center justify-between p-4 bg-white rounded-2xl shadow-sm hover:shadow-md transition-all">
+               <span className="text-[14px] font-bold text-[#110C0C]">{settings.resolution}</span>
+               {availableResolutions.length > 1 && <ChevronRight className="w-3.5 h-3.5 text-[#8A8A8A]" />}
+            </button>
+          </div>
         </div>
 
         <div className="bg-[#F5F5F5] p-4 rounded-[20px] space-y-3">
           <label className="block text-[13px] font-medium text-[#110C0C]">Duration</label>
           <div className="grid grid-cols-5 gap-2">
-            {DURATIONS.map((dur) => (
-              <button key={dur} onClick={() => setSettings({ ...settings, duration: dur })} className={cn("h-[44px] flex items-center justify-center rounded-xl text-[13px] font-bold transition-all shadow-sm", settings.duration === dur ? "bg-white text-gray-600 border-2 border-gray-300" : "bg-white text-[#110C0C] hover:bg-gray-50")}>
+            {availableDurations.map((dur: number) => (
+              <button key={dur} onClick={() => setSettings({ ...settings, duration: dur })} className={cn("h-[44px] flex items-center justify-center rounded-xl text-[13px] font-bold transition-all shadow-sm", settings.duration === dur ? "bg-black text-white" : "bg-white text-[#110C0C] hover:bg-gray-50")}>
                 {dur} S
               </button>
             ))}
@@ -284,7 +319,7 @@ export function VideoSettings({
       </div>
 
       <div className="mt-auto pt-6">
-        <GenerateButton onClick={handleGenerate} isLoading={isGenerating} credits={selectedModel?.creditCostPerSecond ? selectedModel.creditCostPerSecond * settings.duration : 40} className="w-full" />
+        <GenerateButton onClick={handleGenerate} isLoading={isGenerating} credits={selectedModel?.creditCostPerSecond ? Math.ceil(selectedModel.creditCostPerSecond * settings.duration) : 40} className="w-full" />
       </div>
 
       {/* Model List Dropdown */}
@@ -298,8 +333,54 @@ export function VideoSettings({
             <div className="max-h-[400px] overflow-y-auto p-2 space-y-1">
               {models.map((m) => (
                 <button key={m._id || m.id} onClick={() => { setSelectedModel(m); setOpenDropdown(null); }} className={cn("w-full flex items-center gap-4 p-4 rounded-2xl transition-all text-left", selectedModel?._id === m._id ? "bg-purple-50" : "hover:bg-gray-50")}>
-                  <img src={m.icon || "/assets/icons/brands/Component 1-2.svg"} className="w-10 h-10 rounded-lg" alt={m.name} />
-                  <div className="flex-1 min-w-0"><p className="text-[14px] font-bold text-[#110C0C]">{m.name}</p></div>
+                  <img src={m.icon || "/assets/icons/brands/Component 1-2.svg"} className="w-10 h-10 rounded-lg object-contain bg-gray-50" alt={m.name} />
+                  <div className="flex-1 min-w-0">
+                    <p className="text-[14px] font-bold text-[#110C0C]">{m.name}</p>
+                    <p className="text-[11px] text-[#8A8A8A] line-clamp-1">{m.description || m.provider}</p>
+                  </div>
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Dimension Dropdown */}
+      {openDropdown === "dim" && (
+        <div className="absolute inset-0 z-[100] bg-black/10 flex items-center justify-center p-4" onClick={() => setOpenDropdown(null)}>
+          <div className="bg-white w-full max-w-[380px] rounded-[32px] shadow-2xl overflow-hidden border border-[#E5E5E8]" onClick={e => e.stopPropagation()}>
+            <div className="p-5 border-b flex justify-between items-center">
+              <span className="font-bold">Aspect Ratio</span>
+              <button onClick={() => setOpenDropdown(null)}><X className="w-4 h-4" /></button>
+            </div>
+            <div className="p-2 space-y-1">
+              {availableRatios.map((ratio: string) => (
+                <button key={ratio} onClick={() => { setSettings({ ...settings, aspect_ratio: ratio }); setOpenDropdown(null); }} className={cn("w-full flex items-center gap-4 p-4 rounded-2xl transition-all text-left", settings.aspect_ratio === ratio ? "bg-purple-50" : "hover:bg-gray-50")}>
+                  <div className={cn("w-6 h-6 border-2 border-[#110C0C] rounded-sm", 
+                    ratio === "1:1" ? "aspect-square" : 
+                    ratio === "16:9" ? "aspect-video" : 
+                    ratio === "9:16" ? "h-6 w-3" : "w-6 h-4"
+                  )} />
+                  <span className="text-[14px] font-bold text-[#110C0C]">{ASPECT_RATIO_LABELS[ratio] || ratio}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Resolution Dropdown */}
+      {openDropdown === "res" && (
+        <div className="absolute inset-0 z-[100] bg-black/10 flex items-center justify-center p-4" onClick={() => setOpenDropdown(null)}>
+          <div className="bg-white w-full max-w-[380px] rounded-[32px] shadow-2xl overflow-hidden border border-[#E5E5E8]" onClick={e => e.stopPropagation()}>
+            <div className="p-5 border-b flex justify-between items-center">
+              <span className="font-bold">Resolution</span>
+              <button onClick={() => setOpenDropdown(null)}><X className="w-4 h-4" /></button>
+            </div>
+            <div className="p-2 space-y-1">
+              {availableResolutions.map((res: string) => (
+                <button key={res} onClick={() => { setSettings({ ...settings, resolution: res }); setOpenDropdown(null); }} className={cn("w-full flex items-center gap-4 p-4 rounded-2xl transition-all text-left", settings.resolution === res ? "bg-purple-50" : "hover:bg-gray-50")}>
+                  <span className="text-[14px] font-bold text-[#110C0C]">{res}</span>
                 </button>
               ))}
             </div>
