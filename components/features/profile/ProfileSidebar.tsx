@@ -24,7 +24,7 @@ interface ProfileSidebarProps {
 }
 
 export function ProfileSidebar({ isOpen, onClose }: ProfileSidebarProps) {
-  const { user, logout } = useAuth();
+  const { user, logout, updateUser } = useAuth();
   const { showToast } = useToast();
   const { confirm } = useConfirm();
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -42,9 +42,9 @@ export function ProfileSidebar({ isOpen, onClose }: ProfileSidebarProps) {
     if (!name.trim() || name === user?.name) return;
     setIsUpdating(true);
     try {
-      await userService.updateProfile({ name });
+      const res = await userService.updateProfile({ name });
+      updateUser(res.data);
       showToast("Profile updated successfully", "success");
-      // ملاحظة: AuthContext سيقوم بتحديث البيانات تلقائياً إذا كان مربوطاً بـ Event أو Re-fetch
     } catch (e) {
       showToast("Failed to update profile", "error");
     } finally {
@@ -71,10 +71,9 @@ export function ProfileSidebar({ isOpen, onClose }: ProfileSidebarProps) {
     formData.append("avatar", file);
 
     try {
-      await userService.updateProfile(formData);
+      const res = await userService.updateProfile(formData);
+      updateUser(res.data);
       showToast("Avatar updated successfully", "success");
-      // يفضل عمل Refresh للصفحة أو تحديث الـ Auth Context هنا
-      window.location.reload(); 
     } catch (err) {
       showToast("Failed to upload image", "error");
     } finally {
