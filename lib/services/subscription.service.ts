@@ -10,8 +10,8 @@ export const subscriptionService = {
     return apiClient.get(API_ENDPOINTS.subscriptions.current)
   },
 
-  async subscribe(planId: string): Promise<any> {
-    return apiClient.post(API_ENDPOINTS.subscriptions.subscribe, { planId })
+  async subscribe(planId: string, offerId?: string): Promise<any> {
+    return apiClient.post(API_ENDPOINTS.subscriptions.subscribe, { planId, offerId })
   },
 
   async changePlan(newPlanId: string): Promise<any> {

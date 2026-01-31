@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import PageLayout from '@/components/PageLayout'
 import { subscriptionService } from '@/lib/services/subscription.service'
+import { offerService } from '@/lib/services/offer.service'
 import { useToast } from '@/components/ui/Toast'
 import { cn } from '@/lib/utils'
 import { Check, Diamond } from 'lucide-react'
@@ -13,6 +14,7 @@ export default function PricingPage() {
   const [plans, setPlans] = useState<any[]>([])
   const [interval, setInterval] = useState<'monthly' | 'yearly'>('monthly')
   const [currentSub, setCurrentSub] = useState<any>(null)
+  const [activeOffer, setActiveOffer] = useState<any>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [processingId, setProcessingId] = useState<string | null>(null)
   const { showToast } = useToast()
@@ -21,12 +23,16 @@ export default function PricingPage() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [plansRes, subRes] = await Promise.all([
+        const [plansRes, subRes, offerRes] = await Promise.all([
           subscriptionService.getPlans(),
-          isAuthenticated ? subscriptionService.getCurrentSubscription() : Promise.resolve({ data: { subscription: null } })
+          isAuthenticated ? subscriptionService.getCurrentSubscription() : Promise.resolve({ data: { subscription: null } }),
+          offerService.getLatestOffer()
         ])
         setPlans(plansRes.data?.plans || [])
         setCurrentSub(subRes.data?.subscription)
+        if (offerRes.success && offerRes.data?.offer) {
+          setActiveOffer(offerRes.data.offer)
+        }
       } catch (e) {
         showToast('Failed to load pricing information', 'error')
       } finally {
@@ -64,7 +70,7 @@ export default function PricingPage() {
         }
       } else {
         // إذا كان الاشتراك ملغى أو غير موجود، نفتح جلسة دفع جديدة
-        const res = await subscriptionService.subscribe(planId)
+        const res = await subscriptionService.subscribe(planId, activeOffer?._id)
         if (res.data?.checkoutUrl) {
           window.location.href = res.data.checkoutUrl
         }
@@ -73,7 +79,7 @@ export default function PricingPage() {
       // معالجة خطأ Stripe الخاص بالاشتراكات الملغاة بشكل آلي
       if (e.message?.includes('canceled subscription')) {
         try {
-          const res = await subscriptionService.subscribe(planId)
+          const res = await subscriptionService.subscribe(planId, activeOffer?._id)
           if (res.data?.checkoutUrl) window.location.href = res.data.checkoutUrl
           return
         } catch (innerError) {}
@@ -95,6 +101,26 @@ export default function PricingPage() {
           <p className="text-[18px] text-[#514647] font-medium mb-12">
             Pick the plan that matches your goals and budget
           </p>
+
+          {/* Offer Banner */}
+          {activeOffer && (
+            <div className="max-w-2xl mx-auto mb-8 p-4 bg-[#5A0A0A]/10 border border-[#5A0A0A]/20 rounded-2xl flex items-center justify-between gap-4 animate-in fade-in slide-in-from-top-4 duration-1000">
+              <div className="flex items-center gap-3">
+                <div className="bg-[#5A0A0A] p-2 rounded-xl">
+                  <Diamond className="w-5 h-5 text-white" />
+                </div>
+                <div className="text-left">
+                  <p className="text-[14px] font-bold text-[#110C0C]">{activeOffer.title}</p>
+                  <p className="text-[12px] text-[#514647]">{activeOffer.description}</p>
+                </div>
+              </div>
+              <div className="bg-[#5A0A0A] text-white px-4 py-1.5 rounded-full text-[12px] font-black uppercase">
+                {activeOffer.type === 'discount' ? `${activeOffer.value}% OFF` : 
+                 activeOffer.type === 'bonus_credits' ? `+${activeOffer.value} Credits` :
+                 `${activeOffer.value} Days Free`}
+              </div>
+            </div>
+          )}
 
           {/* Toggle Switch */}
           <div className="flex justify-center">

@@ -94,4 +94,11 @@ export const API_ENDPOINTS = {
   media: {
     delete: (mediaId: string) => `/media/${mediaId}`,
   },
+
+  // Offers
+  offers: {
+    getAll: '/offers',
+    getLatest: '/offers/latest',
+    validate: '/offers/validate',
+  },
 }
