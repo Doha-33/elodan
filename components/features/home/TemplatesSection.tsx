@@ -7,23 +7,23 @@ export function TemplatesSection() {
   const templates = [
     {
       name: "Cinematic Movie",
-      videoSrc: "/assets/videos/example-1-tiny.mp4",
+      videoSrc: "https://res.cloudinary.com/djf62tcs2/video/upload/v1769981253/example-1-tiny_br3hwy.mp4",
     },
     {
       name: "3D Portrait",
-      videoSrc: "/assets/videos/after (13).mp4",
+      videoSrc: "https://res.cloudinary.com/djf62tcs2/video/upload/v1769980863/after_13_swtu1u.mp4",
     },
     {
       name: "Abstract Art",
-      videoSrc: "/assets/videos/after (3).mp4",
+      videoSrc: "https://res.cloudinary.com/djf62tcs2/video/upload/v1769981184/after_3_duuxjt.mp4",
     },
     {
       name: "Cyberpunk City",
-      videoSrc: "/assets/videos/example-1-tiny (1).mp4",
+      videoSrc: "https://res.cloudinary.com/djf62tcs2/video/upload/v1769981205/example-1-tiny_1_w8kt8s.mp4",
     },
     {
       name: "Nature Drone",
-      videoSrc: "/assets/videos/after (2).mp4",
+      videoSrc: "https://res.cloudinary.com/djf62tcs2/video/upload/v1769981145/after_2_bnnvav.mp4",
     },
   ];
 
