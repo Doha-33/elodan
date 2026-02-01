@@ -1,63 +1,62 @@
+"use client";
 
-'use client'
-
-import { useState } from 'react'
-import Link from 'next/link'
-import Image from 'next/image'
+import { useState } from "react";
+import Link from "next/link";
+import Image from "next/image";
 // Correcting useRouter import to use next/navigation for Next.js App Router
-import { useRouter } from 'next/navigation'
-import { Eye, EyeOff } from 'lucide-react'
-import AuthLayout from '@/components/auth/AuthLayout'
-import { useAuth } from '@/hooks/useAuth'
-import { API_CONFIG } from '@/lib/config'
+import { useRouter } from "next/navigation";
+import { Eye, EyeOff } from "lucide-react";
+import AuthLayout from "@/components/auth/AuthLayout";
+import { useAuth } from "@/hooks/useAuth";
+import { API_CONFIG } from "@/lib/config";
 
-const GOOGLE_LOGO = "/assets/icons/social/Logo Google.svg"
-const APPLE_LOGO = "/assets/images/backgrounds/apple.png"
+const GOOGLE_LOGO = "/assets/icons/social/Logo Google.svg";
+const APPLE_LOGO = "/assets/images/backgrounds/apple.png";
 
 export default function SignUpPage() {
-  const router = useRouter()
-  const { register, isLoading, error } = useAuth()
-  const [fullName, setFullName] = useState('')
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [confirmPassword, setConfirmPassword] = useState('')
-  const [validationError, setValidationError] = useState('')
+  const router = useRouter();
+  const { register, isLoading, error } = useAuth();
+  const [fullName, setFullName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [validationError, setValidationError] = useState("");
 
-  const [showPassword, setShowPassword] = useState(false)
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const handleGoogleLogin = () => {
     // Determine backend URL
-    const backendUrl = API_CONFIG.baseURL.replace('/api/v1', '');
+    const backendUrl = API_CONFIG.baseURL.replace("/api/v1", "");
     window.location.href = `${backendUrl}/api/v1/auth/google/redirect`;
-  }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setValidationError('')
+    e.preventDefault();
+    setValidationError("");
 
     if (password !== confirmPassword) {
-      setValidationError('Passwords do not match')
-      return
+      setValidationError("Passwords do not match");
+      return;
     }
 
     if (password.length < 8) {
-      setValidationError('Password must be at least 8 characters')
-      return
+      setValidationError("Password must be at least 8 characters");
+      return;
     }
 
     const result = await register({
       name: fullName,
       email,
       password,
-    })
+    });
 
     if (result.success) {
-      router.push('/')
+      router.push("/");
     } else {
-      setValidationError(result.error || 'Registration failed')
+      setValidationError(result.error || "Registration failed");
     }
-  }
+  };
 
   return (
     <AuthLayout
@@ -66,7 +65,7 @@ export default function SignUpPage() {
     >
       {/* Social Sign Up */}
       <div className="flex items-center justify-center gap-3 mb-6">
-        <button 
+        <button
           type="button"
           onClick={handleGoogleLogin}
           className="flex items-center justify-center w-[125px] h-[36px] gap-2 py-2.5 bg-white border border-[#D3D3D3] rounded-3xl hover:bg-gray-50 transition-all"
@@ -80,15 +79,40 @@ export default function SignUpPage() {
           />
           <span className="text-[14px] font-medium text-[#110C0C]">Google</span>
         </button>
-        <button className="flex items-center justify-center bg-white w-[42px] h-[42px] border border-[#D3D3D3] rounded-full hover:bg-gray-50 transition-all">
-          <Image
-            src={APPLE_LOGO}
-            alt="Apple"
-            width={20}
-            height={20}
-            unoptimized
-          />
-        </button>
+        <div className="relative group">
+          <button
+            disabled
+            className="
+      flex items-center justify-center
+      bg-white w-[42px] h-[42px]
+      border border-[#D3D3D3]
+      rounded-full
+      opacity-60 cursor-not-allowed
+    "
+          >
+            <Image
+              src={APPLE_LOGO}
+              alt="Apple"
+              width={20}
+              height={20}
+              unoptimized
+            />
+          </button>
+
+          <div
+            className="
+      absolute left-1/2 -translate-x-1/2 -bottom-8
+      px-2 py-1 rounded-md
+      text-[11px] text-white
+      bg-[#110C0C]
+      opacity-0 group-hover:opacity-100
+      transition-opacity
+      whitespace-nowrap
+    "
+          >
+            Coming soon
+          </div>
+        </div>
       </div>
 
       {/* Divider */}
@@ -206,7 +230,7 @@ export default function SignUpPage() {
           disabled={isLoading}
           className="w-full h-[50px] py-3 bg-[#110C0C] text-white rounded-lg text-[14px] font-medium hover:bg-black transition-all shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          {isLoading ? 'Creating account...' : 'Create account'}
+          {isLoading ? "Creating account..." : "Create account"}
         </button>
       </form>
 
@@ -223,5 +247,5 @@ export default function SignUpPage() {
         </Link>
       </p>
     </AuthLayout>
-  )
+  );
 }

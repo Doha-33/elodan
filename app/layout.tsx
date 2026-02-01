@@ -14,6 +14,9 @@ const inter = Inter({
 export const metadata: Metadata = {
   title: 'Elodan',
   description: 'Elodan - Pixel-perfect Next.js UI',
+  icons: {
+    icon: '/assets/images/backgrounds/eLogo.png',
+  },
 }
 
 export const viewport = {

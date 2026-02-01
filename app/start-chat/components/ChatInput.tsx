@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState } from "react";
@@ -7,8 +6,7 @@ import { chatService } from "@/lib/services/chat.service";
 import { cn } from "@/lib/utils";
 
 const GLOBE_ICON = "/assets/icons/ui/SVGRepo_iconCarrier-8.svg";
-const ATTACHMENT_ICON = "/assets/icons/ui/SVGRepo_iconCarrier-9.svg";
-const SEND_ICON = "/assets/icons/ui/SVGRepo_iconCarrier-10.svg";
+const SEND_ICON = "/assets/icons/ui/SVGRepo_iconCarrier-1.svg";
 const CHEVRON_ICON = "/assets/icons/ui/Vector 3.svg";
 
 interface ChatInputProps {
@@ -63,7 +61,7 @@ export function ChatInput({
   };
 
   return (
-    <div className="max-w-[955px] mx-auto w-full px-4 mb-8 font-[Inter]">
+    <div className="max-w-[955px] mx-auto w-full px-4 mb-2 font-[Inter]">
       <div
         className="
     relative
@@ -76,13 +74,13 @@ export function ChatInput({
   "
         style={{
           background: `
-      linear-gradient(
-        90deg,
-        rgba(212, 212, 212, 0.3) 30%,
-        #EAF2F2 50%,
-        rgba(212, 212, 212, 0.3) 30%
-      )
-    `,
+    linear-gradient(
+      90deg,
+      #e5dede 0%,
+      #dadedf 50%,
+      #e5dede 100%
+    )
+  `,
         }}
       >
         <div className="mb-4">
@@ -104,20 +102,45 @@ export function ChatInput({
         </div>
 
         <div className="flex items-center justify-between gap-4">
-          <div className="flex items-center gap-2">
-            <button className="flex items-center gap-2 px-4 py-[10px] bg-white border border-[#E5E5E8] rounded-full text-[13px] font-medium text-[#110C0C] hover:bg-gray-50 transition-all">
-              <img src={GLOBE_ICON} alt="" className="w-4 h-4" />
-              <span>Search the web</span>
+          <div className="flex items-center gap-2 relative group">
+            <button
+              disabled
+              className="
+      flex items-center gap-2 px-4 py-[10px]
+      bg-white border border-[#E5E5E8] rounded-full
+      text-[13px] font-medium text-[#8A8A8A]
+      cursor-not-allowed opacity-70
+    "
+            >
+              <img src={GLOBE_ICON} alt="" className="w-4 h-4 opacity-60" />
+              <span className="truncate max-w-[100px]">Search the web</span>
             </button>
+
+            {/* Tooltip */}
+            <div
+              className="
+      absolute top-full mt-2 left-1/2 -translate-x-1/2
+      whitespace-nowrap
+      bg-[#110C0C] text-white text-[11px]
+      px-2 py-1 rounded-md
+      opacity-0 scale-95
+      transition-all duration-200
+      group-hover:opacity-100 group-hover:scale-100
+      pointer-events-none
+      z-50
+    "
+            >
+              Coming Soon 🚀
+            </div>
           </div>
 
           <div className="flex items-center gap-[10px]">
             <button className="flex items-center justify-between gap-4 px-5 py-[10px] bg-white border border-[#E5E5E8] rounded-full text-[13px] font-semibold text-[#110C0C] hover:bg-gray-50 transition-all">
-              <span>{selectedModel?.name || "Select Model"}</span>
+              <span className="truncate max-w-[100px]">{selectedModel?.name || "Select Model"}</span>
               <img
-                src={CHEVRON_ICON}
+                src={selectedModel?.icon || CHEVRON_ICON}
                 alt=""
-                className="w-3.5 h-3.5 opacity-40"
+                className="w-6 h-6"
               />
             </button>
 
@@ -134,18 +157,7 @@ export function ChatInput({
               {isSending ? (
                 <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin" />
               ) : (
-                <svg
-                  width="18"
-                  height="18"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <path d="M12 19V5M5 12l7-7 7 7" />
-                </svg>
+                <img src={SEND_ICON} alt="" className="w-5 h-5" />
               )}
             </button>
           </div>

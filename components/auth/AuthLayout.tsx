@@ -8,11 +8,11 @@ interface AuthLayoutProps {
 }
 
 const BACKGROUND_VIDEOS = [
-  "/assets/videos/Special Power.Supernatural.14.mp4",
-  "/assets/videos/community10.mp4",
-  "/assets/videos/Transitions & Edits.7.mp4",
-  "/assets/videos/Transitions & Edits.34.mp4",
-  "/assets/videos/6e46a597-6f5c-4c46-a15e-322294550f93.mp4",
+  "https://res.cloudinary.com/djf62tcs2/video/upload/v1769888913/Special_Power.Supernatural.14_qpwre1.mp4",
+  "https://res.cloudinary.com/djf62tcs2/video/upload/v1769953159/community10_ycwqu5.webm",
+  "https://res.cloudinary.com/djf62tcs2/video/upload/v1769888980/Transitions_Edits.7_r23g7k.mp4",
+  "https://res.cloudinary.com/djf62tcs2/video/upload/v1769889025/Transitions_Edits.34_wkxrtm.mp4",
+  "https://res.cloudinary.com/djf62tcs2/video/upload/v1769953294/6e46a597-6f5c-4c46-a15e-322294550f93_z5ab7d.mp4",
 ];
 
 export default function AuthLayout({
@@ -31,10 +31,10 @@ export default function AuthLayout({
   return (
     <div className="flex flex-col lg:flex-row h-screen font-[Inter] overflow-hidden bg-white">
       {/* Left Side - Form (44.7%) */}
-      <div className="w-full lg:w-[44.7%] h-full flex flex-col items-center justify-center px-6 lg:px-0 bg-white overflow-y-auto elegant-scroll">
+      <div className="w-full lg:w-[44.7%] h-full flex flex-col items-center justify-center px-6 pt-24 lg:px-0 bg-white overflow-y-auto elegant-scroll">
         <div className="w-full max-w-[532px] lg:w-[82.6%] py-12 flex flex-col items-center">
           {/* Logo */}
-          <div className="flex justify-center mt-20 mb-2">
+          <div className="flex justify-center mt-32 mb-2">
             <div className="w-[81px] h-[82px] bg-[#F8F8F8] rounded-2xl flex items-center justify-center">
               <Image
                 src="/assets/images/backgrounds/eLogo.png"

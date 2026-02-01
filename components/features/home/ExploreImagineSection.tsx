@@ -164,7 +164,7 @@ const exploreData = [
   },
   {
     id: 10,
-    videoUrl: "/assets/videos/2.mp4",
+    videoUrl: "https://res.cloudinary.com/djf62tcs2/video/upload/v1769954307/2_soszq9.mp4",
     thumbnail:
       "https://images.unsplash.com/photo-1620641788421-7a1c342ea42e?auto=format&fit=crop&q=80&w=600",
     category: "Video",
@@ -184,7 +184,7 @@ const exploreData = [
   },
   {
     id: 11,
-    videoUrl: "/assets/videos/1.mp4",
+    videoUrl: "https://res.cloudinary.com/djf62tcs2/video/upload/v1769958433/1_lgozi9.mp4",
     thumbnail:
       "https://images.unsplash.com/photo-1485846234645-a62644ef7467?auto=format&fit=crop&q=80&w=600",
     category: "Video",
@@ -202,7 +202,7 @@ const exploreData = [
   },
   {
     id: 12,
-    videoUrl: "/assets/videos/3.mp4",
+    videoUrl: "https://res.cloudinary.com/djf62tcs2/video/upload/v1769954033/3_hewrld.mp4",
     thumbnail:
       "https://images.unsplash.com/photo-1620641788421-7a1c342ea42e?auto=format&fit=crop&q=80&w=600",
     category: "Video",
@@ -222,7 +222,7 @@ const exploreData = [
   },
   {
     id: 13,
-    videoUrl: "/assets/videos/4.mp4",
+    videoUrl: "https://res.cloudinary.com/djf62tcs2/video/upload/v1769958272/4_p0rycf.mp4",
     thumbnail:
       "https://images.unsplash.com/photo-1620641788421-7a1c342ea42e?auto=format&fit=crop&q=80&w=600",
     category: "Video",

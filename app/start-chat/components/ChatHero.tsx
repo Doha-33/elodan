@@ -3,7 +3,7 @@ const SPHERE_IMAGE = "/assets/images/gallery/ae6eae1791ddb0edfefe2427ae5d226182a
 export function ChatHero() {
   return (
     <div 
-      className="flex flex-col items-center gap-[2px] px-4 py-12 font-[Inter]"
+      className="flex flex-col items-center gap-[2px] px-4 pb-4 font-[Inter]"
       data-node-id="75:4249"
     >
       {/* Sphere Image */}

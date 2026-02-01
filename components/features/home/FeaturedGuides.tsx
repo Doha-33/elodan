@@ -24,7 +24,7 @@ const guides = [
     title: "Text to video",
     description: "Generate your text into videos",
     imageSrc: "/assets/images/gallery/vidImg.png",
-    videoSrc: "/assets/videos/3.mp4",
+    videoSrc: "https://res.cloudinary.com/djf62tcs2/video/upload/v1769954033/3_hewrld.mp4",
     defaultPrompt: "A surreal cinematic interior with glossy deep-red tiled walls and floors, forming a narrow corridor lined with identical doors on both sides. A well-dressed man in a dark suit stands in the center, pushing against a door as if trapped in an endless architectural loop. Mirrors and reflections create multiple versions of him, slightly delayed and distorted. The environment feels symmetrical, unsettling, and precise. Overhead soft white lighting reflects sharply on the tiles. Hyper-clean surfaces, brutalist geometry, psychological tension, cinematic depth, ultra-realistic textures, no text, no logos.Camera slowly dollies forward through the corridor → subtle fisheye distortion increases → reflections multiply → cut to top-down view revealing the corridor forming a perfect geometric loop → the man appears centered inside an impossible architectural ring → slow rotation from above.",
     type: "text-to-video" as const,
   },

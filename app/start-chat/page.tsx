@@ -3,7 +3,6 @@
 
 import React, { useState } from 'react'
 import PageLayout from '@/components/PageLayout'
-import { ChatHeader } from './components/ChatHeader'
 import { ChatHero } from './components/ChatHero'
 import { ChatInput } from './components/ChatInput'
 import { AvailableModels } from './components/AvailableModels'

@@ -32,7 +32,7 @@ export function ImageCard({
   // حالة التحميل أو العنصر النائب (Placeholder)
   if (isPlaceholder || isLoading) {
     return (
-      <div className="w-full aspect-[3/4] bg-[#F5F5F6] border border-[#E6E6EA] rounded-2xl flex flex-col items-center justify-center gap-4 p-6">
+      <div className="w-full aspect-[3/4] bg-[#F5F5F6] border border-[#E6E6EA] rounded-2xl flex flex-col items-center justify-center gap-4 p-2">
         {/* Progress Ring */}
         <div className="relative w-20 h-20 flex items-center justify-center">
           <svg className="w-20 h-20 animate-spin" viewBox="0 0 80 80">

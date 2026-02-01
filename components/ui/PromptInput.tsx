@@ -3,7 +3,7 @@
 import { TextareaHTMLAttributes, useState } from 'react'
 import { cn } from '@/lib/utils'
 
-const SURPRISE_ICON = "/assets/icons/ui/SVGRepo_iconCarrier-1.svg"
+const SURPRISE_ICON = "/assets/icons/ui/inspire me.svg"
 const IMPROVE_ICON = "/assets/icons/ui/SVGRepo_iconCarrier-2.svg"
 const CLEAR_ICON = "/assets/icons/ui/SVGRepo_iconCarrier-3.svg"
 const EXPAND_ICON = "/assets/icons/ui/SVGRepo_iconCarrier-4.svg"
@@ -129,37 +129,7 @@ export function PromptInput({
               </button>
             </div>
 
-            {/* Right Side Actions */}
-            <div className="flex items-center gap-2">
-              {/* Clear Button - Only show when has value */}
-              {hasValue && (
-                <button
-                  type="button"
-                  onClick={handleClear}
-                  className={cn(
-                    "w-5 h-5 flex items-center justify-center",
-                    "hover:opacity-70 active:scale-95",
-                    "transition-all duration-200"
-                  )}
-                  aria-label="Clear"
-                >
-                  <img src={CLEAR_ICON} alt="" className="w-full h-full" />
-                </button>
-              )}
-
-              {/* Expand Button */}
-              <button
-                type="button"
-                className={cn(
-                  "w-5 h-5 flex items-center justify-center",
-                  "hover:opacity-70 active:scale-95",
-                  "transition-all duration-200"
-                )}
-                aria-label="Expand"
-              >
-                <img src={EXPAND_ICON} alt="" className="w-full h-full" />
-              </button>
-            </div>
+            
           </div>
         )}
       </div>

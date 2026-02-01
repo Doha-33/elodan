@@ -25,7 +25,7 @@ export default function Home() {
         <ExploreImagineSection />
       </main>
 
-      <footer className="border-t border-gray-100 py-12 mt-16 text-center">
+      <footer className="border-t border-gray-100 py-2 mt-16 text-center">
         <p className="text-gray-400 text-sm font-medium">
           © {new Date().getFullYear()} Elodan AI. All rights reserved.
         </p>
