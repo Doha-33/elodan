@@ -55,7 +55,7 @@ export const videoService = {
     return response.data
   },
 
-  async deleteGeneration(mediaId: string): Promise<void> {
-    return apiClient.delete(API_ENDPOINTS.media.delete(mediaId))
+  async deleteGeneration(generationId: string): Promise<void> {
+    return apiClient.delete(API_ENDPOINTS.video.delete(generationId))
   }
 }

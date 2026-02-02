@@ -79,6 +79,7 @@ export const API_ENDPOINTS = {
     surpriseMe: '/video/surprise-me',
     getHistory: '/video/history',
     save: (generationId: string) => `/video/${generationId}/save`,
+    delete: (generationId: string) => `/video/${generationId}`,
   },
 
   // Video Effects

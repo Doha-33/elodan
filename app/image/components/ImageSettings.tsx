@@ -224,163 +224,169 @@ export function ImageSettings({
       </div>
 
       <div className="space-y-4">
-        <div className="space-y-2 relative">
-          <label className="text-[12px] text-[#8A8A8A]">Model</label>
+        <div className="bg-[#F5F5F5] p-4 rounded-[20px] space-y-2">
+          <div className="space-y-2 relative">
+            <label className="text-[12px] text-[#8A8A8A]">Model</label>
 
-          <button
-            onClick={() =>
-              setOpenDropdown(openDropdown === "model" ? null : "model")
-            }
-            className="w-full h-fit flex items-center justify-between p-3 border border-[#E5E5E8] rounded-2xl hover:bg-gray-50 bg-white shadow-sm transition-all"
-          >
-            <div className="flex items-center gap-3">
-              <div className="w-9 h-9 rounded-lg flex items-center justify-center overflow-hidden bg-gray-50 border border-gray-100">
-                <img
-                  src={
-                    selectedModel?.icon ||
-                    "/assets/icons/brands/Component 1-2.svg"
-                  }
-                  className="w-full h-full object-contain"
-                  alt="Model"
-                />
+            <button
+              onClick={() =>
+                setOpenDropdown(openDropdown === "model" ? null : "model")
+              }
+              className="w-full h-fit flex items-center justify-between p-3 border border-[#E5E5E8] rounded-2xl hover:bg-gray-50 bg-white shadow-sm transition-all"
+            >
+              <div className="flex items-center gap-3">
+                <div className="w-9 h-9 rounded-lg flex items-center justify-center overflow-hidden bg-gray-50 border border-gray-100">
+                  <img
+                    src={
+                      selectedModel?.icon ||
+                      "/assets/icons/brands/Component 1-2.svg"
+                    }
+                    className="w-full h-full object-contain"
+                    alt="Model"
+                  />
+                </div>
+                <span className="text-[14px] font-bold text-[#110C0C]">
+                  {selectedModel?.name || "Select Model"}
+                </span>
               </div>
-              <span className="text-[14px] font-bold text-[#110C0C]">
-                {selectedModel?.name || "Select Model"}
-              </span>
-            </div>
 
-            <ChevronRight
-              className={cn(
-                "w-4 h-4 text-[#8A8A8A] transition-transform",
-                openDropdown === "model" && "rotate-90",
-              )}
-            />
-          </button>
+              <ChevronRight
+                className={cn(
+                  "w-4 h-4 text-[#8A8A8A] transition-transform",
+                  openDropdown === "model" && "rotate-90",
+                )}
+              />
+            </button>
 
-          {/* 👇 هنا الدروب داون */}
-          {openDropdown === "model" && (
-            <div
-              className="
+            {/* 👇 هنا الدروب داون */}
+            {openDropdown === "model" && (
+              <div
+                className="
       absolute top-full mt-2 left-0 z-50
       w-full max-h-[320px]
       bg-white rounded-2xl shadow-xl
       border border-[#E5E5E8]
       overflow-hidden
     "
-            >
-              <div className="max-h-[300px] overflow-y-auto p-2 space-y-1 elegant-scroll">
-                {models.map((m) => (
-                  <div
-                    key={m._id}
-                    onClick={() => {
-                      setSelectedModel(m);
-                      setOpenDropdown(null);
-                    }}
-                    className={cn(
-                      "flex items-center gap-4 p-3 rounded-xl cursor-pointer transition-all",
-                      selectedModel?._id === m._id
-                        ? "bg-[#F04549]/5 border border-[#F04549]/20"
-                        : "hover:bg-gray-50 border border-transparent",
-                    )}
-                  >
-                    <div className="w-9 h-9 rounded-lg overflow-hidden bg-gray-50 border border-gray-100 flex-shrink-0">
-                      <img
-                        src={m.icon || "/assets/icons/brands/Component 1-2.svg"}
-                        className="w-full h-full object-contain"
-                        alt={m.name}
-                      />
-                    </div>
+              >
+                <div className="max-h-[300px] overflow-y-auto p-2 space-y-1 elegant-scroll">
+                  {models.map((m) => (
+                    <div
+                      key={m._id}
+                      onClick={() => {
+                        setSelectedModel(m);
+                        setOpenDropdown(null);
+                      }}
+                      className={cn(
+                        "flex items-center gap-4 p-3 rounded-xl cursor-pointer transition-all",
+                        selectedModel?._id === m._id
+                          ? "bg-[#F04549]/5 border border-[#F04549]/20"
+                          : "hover:bg-gray-50 border border-transparent",
+                      )}
+                    >
+                      <div className="w-9 h-9 rounded-lg overflow-hidden bg-gray-50 border border-gray-100 flex-shrink-0">
+                        <img
+                          src={
+                            m.icon || "/assets/icons/brands/Component 1-2.svg"
+                          }
+                          className="w-full h-full object-contain"
+                          alt={m.name}
+                        />
+                      </div>
 
-                    <div className="flex-1 min-w-0">
-                      <p className="text-[14px] font-bold text-[#110C0C] truncate">
-                        {m.name}
-                      </p>
-                      <p className="text-[11px] text-[#8A8A8A] line-clamp-1">
-                        {m.description || m.provider}
-                      </p>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-[14px] font-bold text-[#110C0C] truncate">
+                          {m.name}
+                        </p>
+                        <p className="text-[11px] text-[#8A8A8A] line-clamp-1">
+                          {m.description || m.provider}
+                        </p>
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
-            </div>
-          )}
+            )}
+          </div>
         </div>
 
-        <div className="space-y-2 relative">
-          <label className="text-[12px] text-[#8A8A8A]">Dimension</label>
+        <div className="bg-[#F5F5F5] p-4 rounded-[20px] space-y-2">
+          <div className="space-y-2 relative">
+            <label className="text-[12px] text-[#8A8A8A]">Dimension</label>
 
-          <button
-            onClick={() =>
-              setOpenDropdown(openDropdown === "dim" ? null : "dim")
-            }
-            className="w-full flex items-center justify-between p-3 border border-[#E5E5E8] rounded-xl hover:bg-gray-50 bg-white transition-all"
-          >
-            <div className="flex items-center gap-3">
-              <div className="w-5 h-5 border border-[#E5E5E8] rounded-sm flex items-center justify-center">
-                <div
-                  className="bg-[#F1F1F1]"
-                  style={{
-                    width: selectedDim.w * 4,
-                    height: selectedDim.h * 4,
-                  }}
-                />
+            <button
+              onClick={() =>
+                setOpenDropdown(openDropdown === "dim" ? null : "dim")
+              }
+              className="w-full flex items-center justify-between p-3 border border-[#E5E5E8] rounded-xl hover:bg-gray-50 bg-white transition-all"
+            >
+              <div className="flex items-center gap-3">
+                <div className="w-5 h-5 border border-[#E5E5E8] rounded-sm flex items-center justify-center">
+                  <div
+                    className="bg-[#F1F1F1]"
+                    style={{
+                      width: selectedDim.w * 4,
+                      height: selectedDim.h * 4,
+                    }}
+                  />
+                </div>
+                <span className="text-[14px] font-medium">
+                  {selectedDim.name}
+                </span>
               </div>
-              <span className="text-[14px] font-medium">
-                {selectedDim.name}
-              </span>
-            </div>
 
-            <ChevronRight
-              className={cn(
-                "w-4 h-4 text-[#8A8A8A] transition-transform",
-                openDropdown === "dim" && "rotate-90",
-              )}
-            />
-          </button>
-          {openDropdown === "dim" && (
-            <div
-              className="
+              <ChevronRight
+                className={cn(
+                  "w-4 h-4 text-[#8A8A8A] transition-transform",
+                  openDropdown === "dim" && "rotate-90",
+                )}
+              />
+            </button>
+            {openDropdown === "dim" && (
+              <div
+                className="
       absolute top-full mt-2 left-0 z-50
       w-full
       bg-white rounded-2xl shadow-xl
       border border-[#E5E5E8]
       overflow-hidden
     "
-            >
-              <div className="p-2 space-y-1">
-                {DIMENSIONS.map((d) => (
-                  <button
-                    key={d.id}
-                    onClick={() => {
-                      setSelectedDim(d);
-                      setOpenDropdown(null);
-                    }}
-                    className={cn(
-                      "w-full flex items-center gap-4 p-3 rounded-xl transition-all",
-                      selectedDim.id === d.id
-                        ? "bg-[#F8F8F8]"
-                        : "hover:bg-gray-50",
-                    )}
-                  >
-                    <div
+              >
+                <div className="p-2 space-y-1">
+                  {DIMENSIONS.map((d) => (
+                    <button
+                      key={d.id}
+                      onClick={() => {
+                        setSelectedDim(d);
+                        setOpenDropdown(null);
+                      }}
                       className={cn(
-                        "w-5 h-5 border rounded flex items-center justify-center",
+                        "w-full flex items-center gap-4 p-3 rounded-xl transition-all",
                         selectedDim.id === d.id
-                          ? "bg-[#110C0C] border-[#110C0C]"
-                          : "border-[#E5E5E8]",
+                          ? "bg-[#F8F8F8]"
+                          : "hover:bg-gray-50",
                       )}
                     >
-                      {selectedDim.id === d.id && (
-                        <Check className="w-3 h-3 text-white" />
-                      )}
-                    </div>
+                      <div
+                        className={cn(
+                          "w-5 h-5 border rounded flex items-center justify-center",
+                          selectedDim.id === d.id
+                            ? "bg-[#110C0C] border-[#110C0C]"
+                            : "border-[#E5E5E8]",
+                        )}
+                      >
+                        {selectedDim.id === d.id && (
+                          <Check className="w-3 h-3 text-white" />
+                        )}
+                      </div>
 
-                    <span className="text-[14px] font-medium">{d.name}</span>
-                  </button>
-                ))}
+                      <span className="text-[14px] font-medium">{d.name}</span>
+                    </button>
+                  ))}
+                </div>
               </div>
-            </div>
-          )}
+            )}
+          </div>
         </div>
 
         {/* Dynamic AI Insight Card */}
