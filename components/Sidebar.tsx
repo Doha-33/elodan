@@ -31,7 +31,76 @@ const iconMap = {
   template: "/assets/icons/ui/effect.svg",
 };
 
-const PRESET_COLORS = ["#5A0A0A", "#110C0C", "#9A57FF", "#22C55E", "#3B82F6", "#F59E0B", "#EF4444", "#EC4899"];
+const isValidHexColor = (hex: string) => /^#[0-9A-Fa-f]{6}$/.test(hex);
+
+const clamp = (value: number, min: number, max: number) => Math.min(max, Math.max(min, value));
+
+const hexToRgb = (hex: string) => {
+  if (!isValidHexColor(hex)) return { r: 17, g: 12, b: 12 };
+  const clean = hex.replace("#", "");
+  return {
+    r: parseInt(clean.slice(0, 2), 16),
+    g: parseInt(clean.slice(2, 4), 16),
+    b: parseInt(clean.slice(4, 6), 16),
+  };
+};
+
+const rgbToHex = (r: number, g: number, b: number) =>
+  `#${[r, g, b].map((v) => clamp(Math.round(v), 0, 255).toString(16).padStart(2, "0")).join("")}`.toUpperCase();
+
+const hsvToHex = (h: number, s: number, v: number) => {
+  const hue = ((h % 360) + 360) % 360;
+  const saturation = clamp(s, 0, 1);
+  const value = clamp(v, 0, 1);
+  const chroma = value * saturation;
+  const x = chroma * (1 - Math.abs(((hue / 60) % 2) - 1));
+  const m = value - chroma;
+
+  let r = 0;
+  let g = 0;
+  let b = 0;
+
+  if (hue < 60) {
+    r = chroma; g = x; b = 0;
+  } else if (hue < 120) {
+    r = x; g = chroma; b = 0;
+  } else if (hue < 180) {
+    r = 0; g = chroma; b = x;
+  } else if (hue < 240) {
+    r = 0; g = x; b = chroma;
+  } else if (hue < 300) {
+    r = x; g = 0; b = chroma;
+  } else {
+    r = chroma; g = 0; b = x;
+  }
+
+  return rgbToHex((r + m) * 255, (g + m) * 255, (b + m) * 255);
+};
+
+const hexToHsv = (hex: string) => {
+  const { r, g, b } = hexToRgb(hex);
+  const red = r / 255;
+  const green = g / 255;
+  const blue = b / 255;
+
+  const max = Math.max(red, green, blue);
+  const min = Math.min(red, green, blue);
+  const delta = max - min;
+
+  let hue = 0;
+  if (delta !== 0) {
+    if (max === red) hue = 60 * (((green - blue) / delta) % 6);
+    else if (max === green) hue = 60 * ((blue - red) / delta + 2);
+    else hue = 60 * ((red - green) / delta + 4);
+  }
+
+  if (hue < 0) hue += 360;
+
+  const saturation = max === 0 ? 0 : delta / max;
+  const value = max;
+
+  return { h: hue, s: saturation, v: value };
+};
 
 export default function Sidebar({ isOpen = true, onClose, isCollapsed = false, onToggleCollapse }: any) {
   const pathname = usePathname();
@@ -45,6 +114,28 @@ export default function Sidebar({ isOpen = true, onClose, isCollapsed = false, o
   const [tempTitle, setTempTitle] = useState("");
   const [colorPickerId, setColorPickerId] = useState<string | null>(null);
   const [selectedColor, setSelectedColor] = useState("#110C0C");
+  const [pickerHue, setPickerHue] = useState(12);
+  const [pickerSaturation, setPickerSaturation] = useState(0.3);
+  const [pickerValue, setPickerValue] = useState(0.35);
+  const pickerAreaRef = useRef<HTMLDivElement>(null);
+  const isDraggingPickerRef = useRef(false);
+
+  useEffect(() => {
+    const onMouseUp = () => {
+      isDraggingPickerRef.current = false;
+    };
+    window.addEventListener("mouseup", onMouseUp);
+    return () => window.removeEventListener("mouseup", onMouseUp);
+  }, []);
+
+  useEffect(() => {
+    if (!colorPickerId) return;
+    const sourceColor = isValidHexColor(selectedColor) ? selectedColor : "#110C0C";
+    const hsv = hexToHsv(sourceColor);
+    setPickerHue(hsv.h);
+    setPickerSaturation(hsv.s);
+    setPickerValue(hsv.v);
+  }, [colorPickerId]);
 
   useEffect(() => {
     if (isAuthLoading || !isAuthenticated) {
@@ -88,17 +179,46 @@ export default function Sidebar({ isOpen = true, onClose, isCollapsed = false, o
     } catch (e) {}
   };
 
-  const handlePin = (id: string) => {
-    setSessions(prev => prev.map(s => s.id === id ? { ...s, isPinned: !s.isPinned } : s));
+  const handlePin = async (id: string) => {
+    const target = sessions.find((s) => s.id === id);
+    if (!target) return;
+
+    const nextPinned = !target.isPinned;
+    setSessions((prev) => prev.map((s) => (s.id === id ? { ...s, isPinned: nextPinned } : s)));
+
+    try {
+      const updated = await chatService.updateSession(id, { isPinned: nextPinned });
+      setSessions((prev) => prev.map((s) => (s.id === id ? { ...s, ...updated } : s)));
+    } catch (e) {
+      setSessions((prev) => prev.map((s) => (s.id === id ? { ...s, isPinned: target.isPinned } : s)));
+      showToast("Failed to update pin", "error");
+    }
   };
 
   const handleApplyColor = async () => {
     if (!colorPickerId) return;
+    if (!isValidHexColor(selectedColor)) {
+      showToast("Please enter a valid HEX color", "error");
+      return;
+    }
     try {
       const updated = await chatService.updateSession(colorPickerId, { color: selectedColor });
       setSessions(prev => prev.map(s => s.id === colorPickerId ? { ...s, ...updated } : s));
       setColorPickerId(null);
     } catch (e) {}
+  };
+
+  const updateFromPickerPosition = (clientX: number, clientY: number) => {
+    const area = pickerAreaRef.current;
+    if (!area) return;
+
+    const rect = area.getBoundingClientRect();
+    const saturation = clamp((clientX - rect.left) / rect.width, 0, 1);
+    const value = clamp(1 - (clientY - rect.top) / rect.height, 0, 1);
+
+    setPickerSaturation(saturation);
+    setPickerValue(value);
+    setSelectedColor(hsvToHex(pickerHue, saturation, value));
   };
 
   const groupedSessions = useMemo(() => {
@@ -186,22 +306,65 @@ export default function Sidebar({ isOpen = true, onClose, isCollapsed = false, o
 
       {colorPickerId && (
         <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/20 backdrop-blur-[2px]" onClick={() => setColorPickerId(null)}>
-          <div className="bg-white p-6 rounded-[28px] shadow-2xl border w-[340px] animate-in zoom-in-95" onClick={e => e.stopPropagation()}>
-            <h4 className="text-[16px] font-bold mb-4 text-center">Chat Accent Color</h4>
-            <div className="grid grid-cols-4 gap-3 mb-6">
-              {PRESET_COLORS.map(c => (
-                <button 
-                  key={c} 
-                  onClick={() => setSelectedColor(c)} 
-                  className={cn("w-10 h-10 rounded-full border-2 transition-all hover:scale-110 flex items-center justify-center", selectedColor === c ? "border-black shadow-md" : "border-transparent")} 
-                  style={{ backgroundColor: c }}
-                >
-                  {selectedColor === c && <Check className="w-4 h-4 text-white" />}
-                </button>
-              ))}
+          <div className="bg-white p-5 rounded-[20px] shadow-2xl border w-[390px] animate-in zoom-in-95" onClick={e => e.stopPropagation()}>
+            <h4 className="text-[16px] font-bold mb-3">Picker Full</h4>
+
+            <div
+              ref={pickerAreaRef}
+              onMouseDown={(e) => {
+                isDraggingPickerRef.current = true;
+                updateFromPickerPosition(e.clientX, e.clientY);
+              }}
+              onMouseMove={(e) => {
+                if (isDraggingPickerRef.current || e.buttons === 1) {
+                  updateFromPickerPosition(e.clientX, e.clientY);
+                }
+              }}
+              className="relative h-[250px] rounded-[12px] border overflow-hidden cursor-crosshair mb-4"
+              style={{ backgroundColor: `hsl(${pickerHue} 100% 50%)` }}
+            >
+              <div className="absolute inset-0" style={{ background: "linear-gradient(to right, #fff 0%, rgba(255,255,255,0) 100%)" }} />
+              <div className="absolute inset-0" style={{ background: "linear-gradient(to top, #000 0%, rgba(0,0,0,0) 100%)" }} />
+              <div
+                className="absolute w-6 h-6 border-4 border-white rounded-full shadow-[0_1px_3px_rgba(0,0,0,0.4)]"
+                style={{
+                  left: `${pickerSaturation * 100}%`,
+                  top: `${(1 - pickerValue) * 100}%`,
+                  transform: "translate(-50%, -50%)",
+                  backgroundColor: selectedColor,
+                }}
+              />
+            </div>
+
+            <div className="flex items-center gap-2 mb-6">
+              <div className="w-9 h-9 rounded-full border border-[#D0D0D0]" style={{ backgroundColor: selectedColor }} />
+              <input
+                type="range"
+                min={0}
+                max={360}
+                step={1}
+                value={pickerHue}
+                className="flex-1 h-3 rounded-full appearance-none cursor-pointer"
+                style={{
+                  background:
+                    "linear-gradient(90deg, #ff0000 0%, #ffff00 16.66%, #00ff00 33.33%, #00ffff 50%, #0000ff 66.66%, #ff00ff 83.33%, #ff0000 100%)",
+                }}
+                onChange={(e) => {
+                  const hue = Number((e.target as HTMLInputElement).value);
+                  setPickerHue(hue);
+                  setSelectedColor(hsvToHex(hue, pickerSaturation, pickerValue));
+                }}
+              />
+              <input
+                type="text"
+                value={selectedColor}
+                onChange={(e) => setSelectedColor(e.target.value)}
+                placeholder="#110C0C"
+                className="w-[100px] h-9 px-2 rounded-lg border border-[#E5E5E8] text-[12px] font-medium uppercase"
+              />
             </div>
             <div className="flex gap-2">
-              <button onClick={() => setColorPickerId(null)} className="flex-1 py-2.5 border rounded-xl text-[14px] font-medium hover:bg-gray-50">Cancel</button>
+              <button onClick={() => setColorPickerId(null)} className="flex-1 py-2.5 border border-[#5A0A0A] rounded-xl text-[14px] font-medium hover:bg-gray-50">cancel</button>
               <button onClick={handleApplyColor} className="flex-1 py-2.5 bg-[#110C0C] text-white rounded-xl text-[14px] font-bold hover:bg-black transition-colors">Apply</button>
             </div>
           </div>

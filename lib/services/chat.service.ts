@@ -36,10 +36,7 @@ export const chatService = {
   },
 
   async updateSession(sessionId: string, data: { title?: string; color?: string; isPinned?: boolean }): Promise<ChatSession> {
-    const response = await apiClient.request(API_ENDPOINTS.chat.deleteSession(sessionId), {
-      method: 'PATCH',
-      body: JSON.stringify(data)
-    })
+    const response = await apiClient.patch(API_ENDPOINTS.chat.updateSession(sessionId), data)
     const session = response.data || response
     return {
       ...session,

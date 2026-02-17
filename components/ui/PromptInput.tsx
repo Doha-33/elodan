@@ -2,9 +2,9 @@
 
 import { TextareaHTMLAttributes, useState } from 'react'
 import { cn } from '@/lib/utils'
+import { Sparkles } from 'lucide-react'
 
 const SURPRISE_ICON = "/assets/icons/ui/inspire me.svg"
-const IMPROVE_ICON = "/assets/icons/ui/SVGRepo_iconCarrier-2.svg"
 const CLEAR_ICON = "/assets/icons/ui/SVGRepo_iconCarrier-3.svg"
 const EXPAND_ICON = "/assets/icons/ui/SVGRepo_iconCarrier-4.svg"
 
@@ -124,7 +124,7 @@ export function PromptInput({
                   "transition-all duration-200"
                 )}
               >
-                <img src={IMPROVE_ICON} alt="" className="w-4 h-4" />
+                <Sparkles className="w-4 h-4" />
                 <span>Improve prompt</span>
               </button>
             </div>

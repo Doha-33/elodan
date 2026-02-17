@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Maximize2, Trash2, Download, X, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -18,15 +18,40 @@ export function ImageCard({
   prompt,
 }: ImageCardProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const lightboxContentRef = useRef<HTMLDivElement>(null);
 
   const handleDownload = async () => {
     if (!image) return;
-    const a = document.createElement("a");
-    a.href = image;
-    a.download = `elodan-${Date.now()}.png`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
+    try {
+      const response = await fetch(image, { mode: "cors" });
+      if (!response.ok) throw new Error("Download failed");
+
+      const blob = await response.blob();
+      const objectUrl = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = objectUrl;
+      a.download = `elodan-${Date.now()}.png`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(objectUrl);
+    } catch {
+      window.open(image, "_blank", "noopener,noreferrer");
+    }
+  };
+
+  const handleFullscreen = async () => {
+    const node = lightboxContentRef.current;
+    if (!node) return;
+
+    if (document.fullscreenElement) {
+      await document.exitFullscreen();
+      return;
+    }
+
+    if (node.requestFullscreen) {
+      await node.requestFullscreen();
+    }
   };
 
   // حالة التحميل أو العنصر النائب (Placeholder)
@@ -109,7 +134,7 @@ export function ImageCard({
             <X className="w-8 h-8" />
           </button>
 
-          <div className="relative max-w-5xl w-full bg-white rounded-[32px] p-8 overflow-hidden flex flex-col gap-6 animate-in zoom-in-95 duration-300 shadow-2xl">
+          <div ref={lightboxContentRef} className="relative w-full max-w-[95vw] max-h-[95vh] bg-white rounded-[32px] p-6 md:p-8 overflow-hidden flex flex-col gap-4 md:gap-6 animate-in zoom-in-95 duration-300 shadow-2xl">
             {/* Action Bar inside Lightbox */}
             <div className="flex justify-end items-center gap-3">
               <button
@@ -122,7 +147,7 @@ export function ImageCard({
               <button className="w-11 h-11 bg-[#F8F8F8] hover:bg-red-50 rounded-full flex items-center justify-center transition-all text-[#110C0C] hover:text-red-600">
                 <Trash2 className="w-5 h-5" />
               </button>
-              <button className="w-11 h-11 bg-[#F8F8F8] hover:bg-gray-100 rounded-full flex items-center justify-center transition-all text-[#110C0C]">
+              <button onClick={handleFullscreen} className="w-11 h-11 bg-[#F8F8F8] hover:bg-gray-100 rounded-full flex items-center justify-center transition-all text-[#110C0C]" title="Fullscreen">
                 <Maximize2 className="w-5 h-5" />
               </button>
             </div>
@@ -130,7 +155,7 @@ export function ImageCard({
             <div className="flex-1 min-h-0 flex items-center justify-center overflow-hidden rounded-2xl bg-gray-50 border border-[#E5E5E8]">
               <img
                 src={image}
-                className="max-w-full max-h-[65vh] object-contain shadow-sm"
+                className="max-w-full max-h-[78vh] object-contain shadow-sm"
                 alt="Preview"
               />
             </div>

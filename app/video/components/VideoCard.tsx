@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import {
   Video as VideoIcon,
   Download,
@@ -30,15 +30,27 @@ export function VideoCard({
 }: VideoCardProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
+  const fullscreenVideoRef = useRef<HTMLVideoElement>(null);
 
   const handleDownload = async () => {
     if (!videoUrl) return;
-    const a = document.createElement("a");
-    a.href = videoUrl;
-    a.download = `elodan-video-${Date.now()}.mp4`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
+    try {
+      const response = await fetch(videoUrl, { mode: "cors" });
+      if (!response.ok) throw new Error("Download failed");
+      const blob = await response.blob();
+      const objectUrl = URL.createObjectURL(blob);
+
+      const a = document.createElement("a");
+      a.href = objectUrl;
+      a.download = `elodan-video-${Date.now()}.mp4`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+
+      URL.revokeObjectURL(objectUrl);
+    } catch {
+      window.open(videoUrl, "_blank", "noopener,noreferrer");
+    }
   };
 
   if (isPlaceholder || isLoading) {
@@ -140,12 +152,19 @@ export function VideoCard({
               <button className="w-12 h-12 bg-[#F8F8F8] hover:bg-red-50 rounded-full flex items-center justify-center transition-all text-[#110C0C] hover:text-red-600">
                 <Trash2 className="w-5 h-5" />
               </button>
-              <button className="w-12 h-12 bg-[#F8F8F8] hover:bg-gray-100 rounded-full flex items-center justify-center transition-all text-[#110C0C]">
+              <button 
+                onClick={() => {
+                  const v = fullscreenVideoRef.current;
+                  if (v?.requestFullscreen) v.requestFullscreen();
+                }}
+                className="w-12 h-12 bg-[#F8F8F8] hover:bg-gray-100 rounded-full flex items-center justify-center transition-all text-[#110C0C]"
+              >
                 <Maximize2 className="w-5 h-5" />
               </button>
             </div>
             <div className="flex-1 min-h-0 flex items-center justify-center overflow-hidden rounded-[24px] bg-black border border-[#E5E5E8]">
               <video
+                ref={fullscreenVideoRef}
                 src={videoUrl}
                 className="max-w-full max-h-[60vh]"
                 controls

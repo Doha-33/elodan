@@ -20,7 +20,8 @@ export function VideoLightbox({ video, onClose, onRefresh }: VideoLightboxProps)
 
   const handleDownload = async () => {
     try {
-      const response = await fetch(video.videoUrl)
+      const response = await fetch(video.videoUrl, { mode: 'cors' })
+      if (!response.ok) throw new Error('Download failed')
       const blob = await response.blob()
       const url = window.URL.createObjectURL(blob)
       const link = document.createElement('a')
@@ -29,8 +30,9 @@ export function VideoLightbox({ video, onClose, onRefresh }: VideoLightboxProps)
       document.body.appendChild(link)
       link.click()
       link.remove()
+      window.URL.revokeObjectURL(url)
     } catch (err) {
-      showToast('Download failed', 'error')
+      window.open(video.videoUrl, '_blank', 'noopener,noreferrer')
     }
   }
 

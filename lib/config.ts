@@ -56,6 +56,7 @@ export const API_ENDPOINTS = {
     createSession: '/chat/sessions',
     getSessions: '/chat/sessions',
     deleteSession: (sessionId: string) => `/chat/sessions/${sessionId}`,
+    updateSession: (sessionId: string) => `/chat/sessions/${sessionId}`,
     sendMessage: (sessionId: string) => `/chat/${sessionId}/messages`,
     getHistory: (sessionId: string) => `/chat/${sessionId}/messages`,
   },
